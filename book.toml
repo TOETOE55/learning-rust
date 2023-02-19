@@ -1,0 +1,10 @@
+[book]
+authors = ["TOETOE55"]
+language = "zh-CN"
+multilingual = false
+src = "src"
+title = "Rust写作计划"
+
+
+[output.html]
+additional-css = ["theme/learningrust.css"]
