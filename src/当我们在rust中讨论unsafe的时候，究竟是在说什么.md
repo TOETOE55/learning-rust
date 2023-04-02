@@ -45,7 +45,7 @@ rust 通过`unsafe`关键字，把rust语言分成safe/unsafe两部分，**希�
 
 
 
-~~在我有限的认知内，在语言内划分safe/unsafe的，rust应该是独一份。（孤陋寡闻了，其实Java/C#这俩语言都有）~~这使得rust在可以无压力使用高级抽象（通过safe rust）的同时也可以像C/C++那样无门槛对接bare matel（通过unsafe rust）。
+~~在我有限的认知内，在语言内划分safe/unsafe的，rust应该是独一份。（孤陋寡闻了，其实Java/C#这俩语言都有）~~ 这使得rust在可以无压力使用高级抽象（通过safe rust）的同时也可以像C/C++那样无门槛对接bare metal（通过unsafe rust）。
 
 在对待unsafe这件事情上，现有语言上其实有两种极端，一种是C/C++的“只有”unsafe，类型系统不会保证任何安全性；另一种类似是Java这种“全safe”，将几乎所有安全问题丢给运行时去处理。后者对比前者就缺乏了很多做低级抽象的能力——这里点名批评Haskell，不靠ffi不靠运行时内置实现，都使用不了“线性内存”，都定义不出数组。。。
 

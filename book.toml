@@ -5,6 +5,10 @@ multilingual = false
 src = "src"
 title = "Rust写作计划"
 
+[rust]
+edition = "2021"
+
 
 [output.html]
 additional-css = ["theme/learningrust.css"]
+
