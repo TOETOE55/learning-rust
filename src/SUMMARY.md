@@ -20,6 +20,7 @@
   - [多线程](./todo.md)
 - [设计模式以及编码技巧](./todo.md)
   - [State machine Pattern](./StateMachinePattern.md)
+  - [crate间接口相互调用](./Rust设计模式探索_crate间接口相互调用.md)
 - [优秀开源项目架构介绍](./todo.md)
   - [rust analyzer](./todo.md)
   - [rustc](./todo.md)
