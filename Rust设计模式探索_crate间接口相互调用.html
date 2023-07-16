@@ -1,0 +1,529 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>crate间接口相互调用 - Rust写作计划</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="theme/learningrust.css">
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="简介.html">简介</a></li><li class="chapter-item expanded "><a href="Rust整体介绍.html"><strong aria-hidden="true">1.</strong> Rust整体介绍</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="来谈谈Rust的大目标和原则.html"><strong aria-hidden="true">1.1.</strong> 来谈谈Rust的大目标和原则</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">1.2.</strong> Rust项目，团队，工作组，社区，基金会，以及如何贡献代码</a></li></ol></li><li class="chapter-item expanded "><a href="Rust基础概念.html"><strong aria-hidden="true">2.</strong> Rust基础概念</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="当我们在rust中讨论“所有权”的时候，究竟是在说什么.html"><strong aria-hidden="true">2.1.</strong> 当我们在Rust中讨论“所有权”的时候，究竟是在说什么</a></li><li class="chapter-item expanded "><a href="当我们在rust中讨论unsafe的时候，究竟是在说什么.html"><strong aria-hidden="true">2.2.</strong> 当我们在Rust中讨论unsafe的时候，究竟是在说什么</a></li><li class="chapter-item expanded "><a href="稍微聊聊Rust中的Invariant.html"><strong aria-hidden="true">2.3.</strong> 稍微聊聊Rust中的Invariant —— 那些必须保持的性质</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.4.</strong> Rust程序的组成</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.5.</strong> Rust的类型系统(type/trait/borrow checker等)</a></li><li class="chapter-item expanded "><a href="rust中的implItem.html"><strong aria-hidden="true">2.6.</strong> Rust中的impl item</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.7.</strong> 宏</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.8.</strong> 库/链接</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.9.</strong> 工具链相关</a></li></ol></li><li class="chapter-item expanded "><a href="一些语言和库的细节.html"><strong aria-hidden="true">3.</strong> 一些语言和库的细节</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="讲讲让我熬了几天夜的DropCheck.html"><strong aria-hidden="true">3.1.</strong> 讲讲让我熬了几天夜的Drop Check</a></li><li class="chapter-item expanded "><a href="RustPinApi真难啊.html"><strong aria-hidden="true">3.2.</strong> Rust Pin api真难啊</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">3.3.</strong> 多线程</a></li></ol></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">4.</strong> 设计模式以及编码技巧</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="StateMachinePattern.html"><strong aria-hidden="true">4.1.</strong> State machine Pattern</a></li><li class="chapter-item expanded "><a href="Rust设计模式探索_crate间接口相互调用.html" class="active"><strong aria-hidden="true">4.2.</strong> crate间接口相互调用</a></li></ol></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">5.</strong> 优秀开源项目架构介绍</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">5.1.</strong> rust analyzer</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">5.2.</strong> rustc</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">5.3.</strong> servo</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust写作计划</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="rust设计模式探索crate间接口相互调用"><a class="header" href="#rust设计模式探索crate间接口相互调用">Rust设计模式探索：crate间接口相互调用</a></h1>
+<p>在程序设计中我们常常将一个复杂的程序，划分为若干个组件，这些组件最后通过一个容器组装并管理起来，然后程序通过这个容器对外暴露功能。</p>
+<p>在最理想的情况下，这些组件应该是相互独立的，他们不相互调用，不会反过来去访问容器的其它部分，像砖块一样垒起一个程序。这样的设计当然很好，但也很难。在一个比较复杂的工程中多多少少会遇到需要模块间相互调用的需求。</p>
+<p>实现这个需求，有几种做法，其中方法5是我想到的最好的一个方法：</p>
+<h1 id="方法1组件内对容器弱引用"><a class="header" href="#方法1组件内对容器弱引用">方法1：组件内对容器弱引用</a></h1>
+<p>组件中持有一个容器的引用（或弱引用），通过弱引用来访问容器的其它部分。</p>
+<p>一般来说在rust中比较少采用这种设计，因为rust中缺乏对编写相互依赖结构的支持，写起来难受，还容易出bug。</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct ComponentA {
+    container: Weak&lt;Container&gt;,
+    // ...
+}
+
+struct Container {
+    component_a: Arc&lt;ComponentA&gt;,
+    component_b: Arc&lt;ComponentB&gt;,
+    component_c: Arc&lt;ComponentC&gt;,
+    // ...
+}
+<span class="boring">}</span></code></pre></pre>
+<h1 id="方法2参数注入容器的引用"><a class="header" href="#方法2参数注入容器的引用">方法2：参数注入容器的引用</a></h1>
+<p>程序中所有函数都传递整个容器的引用作为参数，那么一个组件就可以通过这个引用访问其它组件提供的方法了。</p>
+<p>但这种做法也有一些问题，这样要求组件和容器需要定义在同一个crate中，如果容器定义在比组件更上层的crate中，那么组件就没法拿到容器的类型，也没法定义一个需要容器引用的方法了。</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct Container {
+    component_a: ComponentA,
+    component_b: ComponentB,
+    component_c: ComponentC,
+    // ...
+}
+
+impl ComponentA {
+    fn foo(container: &amp;Container) {
+        // 可以通过container去访问另一个组件提供的方法
+        container.component_b.bar(
+            // 自身组件因为在同一个模块内，可以访问其字段
+            container.component_a.x
+        );
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h1 id="方法3接口实现分离集中的接口层"><a class="header" href="#方法3接口实现分离集中的接口层">方法3：接口实现分离——集中的接口层</a></h1>
+<p>当工程复杂起来之后，我们则一般倾向用crate而非mod去组织组件。crate的依赖结构就变成了</p>
+<p><a href="https://mermaid.live/edit#pako:eNqFT7sOwjAM_JXKc_sDGZCgXZlgQlmsxKWRGrsyjhCq-u8EGBh7072k060QJBI4GGd5hgnVmuvg1XNT0QsbJiZtuu5QVV6Eie24k5928h5ayKQZU6zD66frwSbK5MFVGmnEMpsHz1utYjG5vDiAMy3UQlkiGg0J74oZ3Ijzo7oL8k3krykmEz3_zn0_bm8z0U8u"><img src="https://mermaid.ink/img/pako:eNqFT7sOwjAM_JXKc_sDGZCgXZlgQlmsxKWRGrsyjhCq-u8EGBh7072k060QJBI4GGd5hgnVmuvg1XNT0QsbJiZtuu5QVV6Eie24k5928h5ayKQZU6zD66frwSbK5MFVGmnEMpsHz1utYjG5vDiAMy3UQlkiGg0J74oZ3Ijzo7oL8k3krykmEz3_zn0_bm8z0U8u?type=png" alt="" /></a></p>
+<p>但使用crate带来的一个问题是crate与crate之间不能相互依赖，使得crate提供的接口在crate之间无法相互调用（但其实有在链接时的魔法<a href="https://crates.io/crates/linkme">linkme</a>，使得crate之间能相互调用）。</p>
+<p>为了解决这个问题，可以引入一个Middle层，将一个程序的所有<strong>状态</strong>以及组件提供的<strong>接口</strong>都放在Middle层；而接口的<strong>实现</strong>和<strong>注册</strong>则放在Component层：</p>
+<p><a href="https://mermaid.live/edit#pako:eNqFkEELgzAMhf-K5Kx_oIfB1Kun7TR6CTbOQptKlzKG-N_XOYaDwcwpL98j8N4MfTAECgYX7v2IUYpzq6PmIk8TWNAyxaKqDln5KTCxHHd4vcObjX8-robOGuPoB9b_YPMFoQRP0aM1Oc_8MmqQkTxpUHk1NGByokHzkq2YJJwe3IOSmKiENBkUai1eI3pQA7pbvk7IlxA2TcZKiN27s7W65Qn1EWrK"><img src="https://mermaid.ink/img/pako:eNqFkEELgzAMhf-K5Kx_oIfB1Kun7TR6CTbOQptKlzKG-N_XOYaDwcwpL98j8N4MfTAECgYX7v2IUYpzq6PmIk8TWNAyxaKqDln5KTCxHHd4vcObjX8-robOGuPoB9b_YPMFoQRP0aM1Oc_8MmqQkTxpUHk1NGByokHzkq2YJJwe3IOSmKiENBkUai1eI3pQA7pbvk7IlxA2TcZKiN27s7W65Qn1EWrK?type=png" alt="" /></a></p>
+<p>rustc就是这么做的，在middle中定义了<a href="https://doc.rust-lang.org/nightly/nightly-rustc/rustc_middle/ty/context/struct.GlobalCtxt.html"><code>GlobalCtxt&lt;'tcx&gt;</code></a>包含了一个编译器的所有状态；定义了<a href="https://doc.rust-lang.org/nightly/nightly-rustc/rustc_middle/query/struct.Providers.html#"><code>Providers</code></a>则包含了编译器对内暴露的所有接口，这些接口都会有一个包含<code>GlobalCtxt</code>引用的参数，在各个编译器的组件中实现并注册这些方法，同时各个组件也都能调用这些方法。</p>
+<p>不过这种集中式的Middle层也有些问题：</p>
+<ol>
+<li>Middle层将会十分庞大的codebase，且所有组件都会依赖这个Middle层。每当需要重新编译（比如修改到了middle的代码），就需要几乎编译整个工程，也没办法利用并行编译，导致编译时长爆炸。</li>
+<li>声明在Middle层中的接口形式有所限制，不能包含泛型函数。</li>
+<li>组件没法拥有一些私有的状态，必须都需要在Middle中暴露出来。</li>
+<li>组件的接口是动态提供的，没法在编译时就得知调用的接口是否已经有实现了。</li>
+<li>Middle层通常是单一一个crate，当我们只需要一小部分组件的时候，难以拆分。（不过这算是个小众需求？）</li>
+</ol>
+<h1 id="方法4接口实现分离动态查询"><a class="header" href="#方法4接口实现分离动态查询">方法4：接口实现分离——动态查询</a></h1>
+<p>为了解决方法3中的一些问题，我们把Component层拆分为<strong>实现</strong>与<strong>接口</strong>层，将Middle层的接口声明放到Component接口层中，将Middle层与Component相关的状态放在Component的实现层中；而Middle层只保留接口注册、接口查找（以及增加状态注册）的接口。</p>
+<p><a href="https://mermaid.live/edit#pako:eNqN0r0KwjAQB_BXKTfrC3QQ2nRxKAg6SZajuWogHyVeEZG-u1GHVgtpM-VyP7gL_J_QeEWQQ2v8vbli4OxUySBdFo_wjlE7Ctl2u4uV7bwjx8XedmbBlCuMmJrRTqf8DS4O-zWunLiZL9M-5YqVTqTmi7RPueS_3st9eK2VMjTfc6EvfvuwAUvBolYxHM-3lcBXsiQhj1dFLfaGJUg3RIo9--PDNZBz6GkDfaeQqdJ4CWghb9Hc4muH7uz9WJPS7EP9DeAnh8MLewPXWA"><img src="https://mermaid.ink/img/pako:eNqN0r0KwjAQB_BXKTfrC3QQ2nRxKAg6SZajuWogHyVeEZG-u1GHVgtpM-VyP7gL_J_QeEWQQ2v8vbli4OxUySBdFo_wjlE7Ctl2u4uV7bwjx8XedmbBlCuMmJrRTqf8DS4O-zWunLiZL9M-5YqVTqTmi7RPueS_3st9eK2VMjTfc6EvfvuwAUvBolYxHM-3lcBXsiQhj1dFLfaGJUg3RIo9--PDNZBz6GkDfaeQqdJ4CWghb9Hc4muH7uz9WJPS7EP9DeAnh8MLewPXWA?type=png" alt="" /></a></p>
+<p>大概举个例子：</p>
+<p>Middle里提供一个类型，用于存放所有组件的状态，和组件提供的接口：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct GlobalCtxt {
+    /// 所有的组件都将注册在这
+    components: HashMap&lt;TypeId, Rc&lt;dyn Any&gt;&gt;,
+    /// 所有组件所提供的接口都将提供在这
+    interfaces: HashMap&lt;TypeId, Rc&lt;dyn Any&gt;&gt;,
+}
+
+impl GlobalCtxt {
+    pub fn register_component&lt;Component: Any&gt;(
+        &amp;mut self, 
+        component: Rc&lt;Component&gt;
+    ) -&gt; Result&lt;()&gt; { /*...*/ }
+    
+    pub fn register_interface&lt;Interface: Any&gt;(
+        &amp;mut self, 
+        interface: Rc&lt;Interface&gt;
+    ) -&gt; Result&lt;()&gt; { /*...*/ }
+    
+    pub fn get_interface&lt;Interface: Any + ?Sized&gt;(&amp;self) 
+        -&gt; Option&lt;Rc&lt;Interface&gt;&gt;
+    { /*...*/ }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Component接口层则提供一系列接口的定义：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// ComponentFooAPI
+trait Foo {
+    fn foo(&amp;self, ctxt: &amp;GlobalCtxt);
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Component实现层则实现声明在接口层的接口，并将注册到<code>GlobalCtxt</code>中：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct ComponentFoo {
+    count: RefCell&lt;usize&gt;,
+}
+
+impl Foo for ComponentFoo {
+    fn foo(&amp;self, ctxt: &amp;GlobalCtxt) {
+        *self.count.borrow_mut() += 1;
+        // 通过GlobalCtxt调用其它组件提供的接口
+        let bar = ctxt.get_interface::&lt;Rc&lt;dyn Bar&gt;&gt;().unwrap();
+        bar.bar();
+    }
+}
+
+pub fn register(ctxt: &amp;mut ClobalCtxt) -&gt; Result&lt;()&gt; {
+    let component = Rc::new(ComponentFoo::default());
+    register.register_component(component.clone())?;
+    register.register_interface(component as Rc&lt;dyn Foo&gt;)
+}
+<span class="boring">}</span></code></pre></pre>
+<p>这样解决了方法3中的一些问题：</p>
+<ol>
+<li>编译慢：首先Middle不需要巨大的codebase了，只需要一小部分管理组件的代码即可，后续也几乎不会对Middle层做改动；接口定义放在多个crate中，能充分发挥并行编译的带来的编译速度的优化。</li>
+<li>组件不可拆分：这个方案下Middle不包含所有组件的代码，且每个组件都有自己单独的两个crate，拆分起来比较简单。</li>
+<li>组件状态无法私有化：这个方式，组件的状态本来就定义在组件的实现层中，而Middle中类型则被擦除了，于是不会造成状态的泄露。</li>
+</ol>
+<p>但还有一些问题没有解决，而且还引入了其他问题：</p>
+<ol>
+<li>接口形式受限：比如这里的例子只能以trait的形式提供满足<code>Any</code>且dyn safe的接口；</li>
+<li>接口动态提供：同样无法在编译时得知某个接口是否已经提供；</li>
+<li>接口查询引入了额外的开销：比如这里是用<code>HashMap</code> + <code>TypeId</code>来查询接口，相比于方法3，这里就引入了额外的开销。</li>
+</ol>
+<h1 id="方法5接口实现分离静态的依赖注入"><a class="header" href="#方法5接口实现分离静态的依赖注入">方法5：接口实现分离——静态的依赖注入</a></h1>
+<p>有没有一种方案，能同时解决这些问题的呢：</p>
+<ol>
+<li>支持crate之间相互调用</li>
+<li>接口形式不受限（或者限制很小）</li>
+<li>接口调用零开销</li>
+<li>接口静态地提供</li>
+<li>组件状态不暴露</li>
+<li>组件可拆分</li>
+<li>编译速度快</li>
+</ol>
+<p>最近我可能找到了可能满足这几点的方案，在看到了一个叫<a href="https://docs.rs/ref-cast/1.0.16/ref_cast/"><code>ref-cast</code></a>的库之后。</p>
+<blockquote>
+<p>ref-cast库提供了生成<code>&amp;T -&gt; &amp;Wrapper&lt;T&gt;</code>转换方法的宏。</p>
+</blockquote>
+<p>这个方案同样将组件分为了实现层和接口层，但不再需要Middle层，而所有集成的操作都放在<code>Container</code>层中：</p>
+<p><a href="https://mermaid.live/edit#pako:eNqN0r0KgzAQB_BXkZv1BRwKGheHQqGdSpbDnFXIh6QnpYjv3tgOSgupme6OX_gHchM0ThHk0Gr3aDr0nFwq6aVNwhHOMvaWfJJlh9CZwVmyXNRm0H9MucOIrVntNuUruDjVe1y5cT--jPuYK3Y6EcsXcR9zyzshBUPeYK_Cp03LHQnckSEJeSgVtThqliDtHCiO7M5P20DOfqQUxkEhU9XjzaOBvEV9D9MB7dW5tSfVs_PHz2K892N-AfLdtxY"><img src="https://mermaid.ink/img/pako:eNqN0r0KgzAQB_BXkZv1BRwKGheHQqGdSpbDnFXIh6QnpYjv3tgOSgupme6OX_gHchM0ThHk0Gr3aDr0nFwq6aVNwhHOMvaWfJJlh9CZwVmyXNRm0H9MucOIrVntNuUruDjVe1y5cT--jPuYK3Y6EcsXcR9zyzshBUPeYK_Cp03LHQnckSEJeSgVtThqliDtHCiO7M5P20DOfqQUxkEhU9XjzaOBvEV9D9MB7dW5tSfVs_PHz2K892N-AfLdtxY?type=png" alt="" /></a></p>
+<p>接下来看看这个方法究竟是怎么组织的：</p>
+<ol>
+<li>
+<p>接口层。现在假设有<code>Even</code>和<code>Odd</code>两个组件，两套接口：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// even-api
+trait Even {
+    fn is_even(&amp;mut self, n: u64) -&gt; bool;
+    /// 输出`Even::is_even`被调用的次数
+    // 该方法使得`Even`不再dyn safe
+    fn emit_count&lt;T&gt;(&amp;self, f: impl FnOnce(usize) -&gt; T) -&gt; T;
+}
+
+// odd-api
+trait Odd {
+    fn is_odd(&amp;mut self, n: u64) -&gt; bool;
+}
+<span class="boring">}</span></code></pre></pre>
+</li>
+<li>
+<p>实现层。这次的实现层中，多引入了了一个<code>Proxy</code>的结构，这个<code>Proxy</code>带了一个泛型参数，用于注入接口，以及组件自身的状态。那么所有该组件相关的功能，都可以基于<code>Proxy</code>结构来实现：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// even-impl
+
+#[derive(Defaule)]
+pub struct EvenState {
+    count: usize,
+}
+
+#[derive(ref_cast::RefCast)]
+#[repr(transparent)]
+pub struct EvenProxy&lt;Ctx: ?Sized&gt; {
+    ctx: Ctx
+};
+
+// `&amp;EvenProxy&lt;Ctx&gt;`可以当做`&amp;EvenState`使用
+impl&lt;Ctx: ?Sized&gt; Deref for EvenProxy&lt;Ctx&gt; 
+where
+    // 要求被注入的上下文需要满足
+    Ctx: AsRef&lt;EvenState&gt;,
+{
+    type Target = EvenState;
+    fn deref(&amp;self) -&gt; &amp;EvenState {
+        self.ctx.as_ref()
+    }
+}
+
+// `&amp;mut EvenProxy&lt;Ctx&gt;`可以当做`&amp;mut EvenState`使用
+impl&lt;Ctx: ?Sized&gt; Deref for EvenProxy&lt;Ctx&gt; 
+where
+    // 要求被注入的上下文需要满足
+    Ctx: AsRef&lt;EvenState&gt;,
+    Ctx: AsMut&lt;EvenState&gt;
+{
+    fn deref_mut(&amp;mut self) -&gt; &amp;mut EvenState {
+        self.ctx.as_mut()
+    }
+}
+
+
+// 实现`Even`接口
+impl&lt;Ctx: ?Sized&gt; Even for EvenProxy&lt;Ctx&gt;
+where
+    // 通过`Ctx`注入`Odd`接口
+    Ctx: Odd,
+{
+    fn is_even(&amp;mut self, n: u64) -&gt; bool {
+       is_even_impl(self, n)
+    }
+    
+    fn emit_count&lt;T&gt;(&amp;self, f: impl FnOnce(usize) -&gt; T) -&gt; T {
+        f(self.count)
+    }
+}
+
+fn is_even_impl(
+    // 用`dyn`理论上能加快编译速度，因为不需要等到泛型实例化的时候才生成代码
+    proxy: &amp;mut EvenProxy&lt;dyn Odd&gt;,
+    n: u64,
+) -&gt; bool {
+     // `deref_mut`到了`EvenState`
+    proxy.count += 1;
+
+    (n == 0) || proxy
+        .ctx // 通过`ctx`调用Odd接口
+        .is_odd(n - 1)
+}
+<span class="boring">}</span></code></pre></pre>
+<p>odd的实现同理。</p>
+</li>
+<li>
+<p>容器层。容器将会存放所有组件的状态，容器同时也实现所有组件提供的接口。上面Proxy结构的<code>Ctx</code>泛型都将实例化为<code>Container</code>：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Default)]
+struct Container {
+    // 若有需要，这些字段都可以是lazy的
+    even_state: EvenState,
+    odd_state: OddState,
+}
+
+// 为了可以让`Proxy`可以解引用到组件的状态
+impl AsRef&lt;EvenState&gt; for Container { /**/ }
+impl AsMut&lt;EvenState&gt; for Container { /**/ }
+impl AsRef&lt;OddState&gt; for Container { /**/ }
+impl AsMut&lt;OddState&gt; for Container { /**/ }
+
+// 为`Container`实现所有组件的接口，让`Proxy`可以通过ctx调用
+impl Even for Container {
+    #[inline]
+    fn is_even(&amp;mut self, n: u64) -&gt; bool {
+        // `&amp;mut Container` -&gt; `&amp;mut EvenProxy&lt;Container&gt;`
+        // 即`Ctx`被实例化为了`Container`，
+        // 调用`Proxy.ctx.is_even()`时就会被`Container`转发到实际的实现中
+        EvenProxy::ref_cast_mut(self).is_even(n)
+    }
+    
+    #[inline]
+    fn emit_count&lt;T&gt;(&amp;self, f: FnOnce(usize) -&gt; T) -&gt; T {
+        EvenProxy::ref_cast(self).emit_count(f)
+    }
+}
+
+impl Odd for Container { /**/ }
+<span class="boring">}</span></code></pre></pre>
+</li>
+</ol>
+<p>我们来分析一下<code>EvenProxy::&lt;Ctx&gt;::is_even</code>的调用链：</p>
+<ol>
+<li><code>EvenProxy::&lt;Ctx&gt;::is_even</code>调用了<code>Ctx::is_odd</code></li>
+<li><code>Ctx</code>实例化为<code>Container</code>，即相当于调用了<code>Container::is_odd</code></li>
+<li><code>Container::is_odd</code>实际派发到了<code>OddProxy::&lt;Container&gt;::is_odd</code>中</li>
+<li><code>OddProxy::&lt;Ctx&gt;::is_odd</code>内部可能调用了<code>Ctx::is_even</code></li>
+<li>...</li>
+</ol>
+<p>现在相当于<code>Container</code>是一个中间商（之前的方法3,4的中间商则是Middle中定义的类型），通过它来派发具体的实现。</p>
+<p>方法5其实基本解决了上面几种方案带来的问题，目前我还没想到有什么其它问题（除了<code>RefCast</code>的强转暂时没有支持其它指针类型，可以自己实现）</p>
+<p>[*] 支持crate之间相互调用：通过<code>Proxy</code>类型</p>
+<p>[*] 接口形式不受限：trait的定义基本没什么限制</p>
+<p>[*] 接口调用零开销：简单的派发，可以被inline掉</p>
+<p>[*] 接口静态地提供：可以静态地检查Ctx有没有满足某个trait。</p>
+<p>[*] 组件状态不暴露：组件的状态类型暴露，但是内部结构可以不暴露</p>
+<p>[*] 组件可拆分：没有Middle层，可拆分</p>
+<p>[] 编译速度快（相对）：没有Middle层，组件接口层分开定义。不过有可能因为泛型的原因，实例化和codegen都在Container发生，导致Container层编译速度慢（但可以在内部实现中多使用dyn 的Ctx，将编译时间多分摊到各个组件中）。</p>
+<p>demo代码可以参考我的仓库：https://github.com/TOETOE55/dep-inj。这个里面我实现了一些宏，方便生成<code>Proxy</code>相关的模板代码。</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Default, dep_inj::DepInj)]
+#[target(EvenProxy)] // 生成`struct EventProxy`
+pub struct EvenState {
+    count: usize,
+}
+
+
+// 实现`Even`接口
+impl&lt;Ctx: ?Sized&gt; Even for EvenProxy&lt;Ctx&gt;
+where
+    // 通过`Ctx`注入`Odd`接口
+    Ctx: Odd,
+{
+    fn is_even(&amp;mut self, n: u64) -&gt; bool {
+       is_even_impl(self, n)
+    }
+    
+    fn emit_count&lt;T&gt;(&amp;self, f: impl FnOnce(usize) -&gt; T) -&gt; T {
+        f(self.count)
+    }
+}
+
+fn is_even_impl(
+    // 用`dyn`理论上能加快编译速度，因为不需要等到泛型实例化的时候才生成代码
+    proxy: &amp;mut EvenProxy&lt;dyn Odd&gt;,
+    n: u64,
+) -&gt; bool {
+     // `deref_mut`到了`EvenState`
+    proxy.count += 1;
+
+    (n == 0) || proxy
+        .deps_ref_mut() 
+        .is_odd(n - 1)
+}
+<span class="boring">}</span></code></pre></pre>
+<p>不过Container的一些那些代码暂时想不到该怎么生成比较好，就当做boilerplate了。。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="StateMachinePattern.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="todo.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="StateMachinePattern.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="todo.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

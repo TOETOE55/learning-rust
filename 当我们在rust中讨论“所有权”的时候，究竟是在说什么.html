@@ -1,0 +1,549 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>当我们在Rust中讨论“所有权”的时候，究竟是在说什么 - Rust写作计划</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="theme/learningrust.css">
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="简介.html">简介</a></li><li class="chapter-item expanded "><a href="Rust整体介绍.html"><strong aria-hidden="true">1.</strong> Rust整体介绍</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="来谈谈Rust的大目标和原则.html"><strong aria-hidden="true">1.1.</strong> 来谈谈Rust的大目标和原则</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">1.2.</strong> Rust项目，团队，工作组，社区，基金会，以及如何贡献代码</a></li></ol></li><li class="chapter-item expanded "><a href="Rust基础概念.html"><strong aria-hidden="true">2.</strong> Rust基础概念</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="当我们在rust中讨论“所有权”的时候，究竟是在说什么.html" class="active"><strong aria-hidden="true">2.1.</strong> 当我们在Rust中讨论“所有权”的时候，究竟是在说什么</a></li><li class="chapter-item expanded "><a href="当我们在rust中讨论unsafe的时候，究竟是在说什么.html"><strong aria-hidden="true">2.2.</strong> 当我们在Rust中讨论unsafe的时候，究竟是在说什么</a></li><li class="chapter-item expanded "><a href="稍微聊聊Rust中的Invariant.html"><strong aria-hidden="true">2.3.</strong> 稍微聊聊Rust中的Invariant —— 那些必须保持的性质</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.4.</strong> Rust程序的组成</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.5.</strong> Rust的类型系统(type/trait/borrow checker等)</a></li><li class="chapter-item expanded "><a href="rust中的implItem.html"><strong aria-hidden="true">2.6.</strong> Rust中的impl item</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.7.</strong> 宏</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.8.</strong> 库/链接</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.9.</strong> 工具链相关</a></li></ol></li><li class="chapter-item expanded "><a href="一些语言和库的细节.html"><strong aria-hidden="true">3.</strong> 一些语言和库的细节</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="讲讲让我熬了几天夜的DropCheck.html"><strong aria-hidden="true">3.1.</strong> 讲讲让我熬了几天夜的Drop Check</a></li><li class="chapter-item expanded "><a href="RustPinApi真难啊.html"><strong aria-hidden="true">3.2.</strong> Rust Pin api真难啊</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">3.3.</strong> 多线程</a></li></ol></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">4.</strong> 设计模式以及编码技巧</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="StateMachinePattern.html"><strong aria-hidden="true">4.1.</strong> State machine Pattern</a></li><li class="chapter-item expanded "><a href="Rust设计模式探索_crate间接口相互调用.html"><strong aria-hidden="true">4.2.</strong> crate间接口相互调用</a></li></ol></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">5.</strong> 优秀开源项目架构介绍</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">5.1.</strong> rust analyzer</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">5.2.</strong> rustc</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">5.3.</strong> servo</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust写作计划</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="当我们在rust中讨论所有权的时候究竟是在说什么"><a class="header" href="#当我们在rust中讨论所有权的时候究竟是在说什么">当我们在Rust中讨论“所有权”的时候，究竟是在说什么</a></h1>
+<blockquote>
+<p>本文主要参考：</p>
+<ul>
+<li><a href="https://doc.rust-lang.org/reference/introduction.html">rust reference</a></li>
+<li><a href="https://doc.rust-lang.org/stable/std/">rust std</a></li>
+<li><a href="https://rustc-dev-guide.rust-lang.org/about-this-guide.html">rustc dev guide</a></li>
+</ul>
+</blockquote>
+<p>不过这篇文章不是正式的文档，有些可能理解的不够深的地方就变成脑补了。如果有理解出现偏差的地方，还请多多包涵，欢迎pr。</p>
+<h2 id="值"><a class="header" href="#值">值</a></h2>
+<p>在rust中一个 <strong>值(Value)</strong> 的一生大概会经历这些事情：</p>
+<ol>
+<li>
+<p>从一个<strong>表达式(Expression)<strong>中</strong>求值(Evaluation)</strong></p>
+</li>
+<li>
+<p>求值后值会被放在一个 <strong>位置(Place)</strong> 中</p>
+</li>
+<li>
+<p>这个值可能会被<strong>借用(borrow)</strong>，被修改</p>
+</li>
+<li>
+<p>最后这个值可能会被</p>
+<ol>
+<li>
+<p><strong>移动(move)</strong>——即从当前位置移动到另一个位置中</p>
+</li>
+<li>
+<p><strong>拷贝(copy)</strong>——即从当前位置拷贝一份到另一个位置中</p>
+</li>
+<li>
+<p><strong>丢弃(drop)</strong>——比如一个变量超出作用域的时候，就会调用析构函数把当前值给丢弃掉</p>
+</li>
+<li>
+<p><strong>泄露(leak)</strong>——一个值到程序结束时既没有被丢弃，也没有失效，那么我们就可以说这个值被泄露了。</p>
+</li>
+<li>
+<p><strong>失效(invalidate)</strong>：</p>
+<p>其实移动和丢弃也是使原值失效的手段之一，当值被移走时，在当前位置原来的值就失效了；当值被丢弃之后值也会失效。</p>
+<p>但还有其它手段，比如直接通过<code>ptr::write()</code>往当前位置覆写新值的时候，旧值就失效了；位置对应的内存直接被 <strong>释放(deallocate)</strong> 时，位置上的值也同样会失效了。</p>
+<p>总之当我们试图去访问一个失效的值时，就是<strong>未定义行为(<em>U</em>ndefined <em>B</em>ehavior)</strong>。</p>
+</li>
+</ol>
+</li>
+</ol>
+<p>比如：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{
+    let mut s = String::new(); // 求值得到一个空字符串，放到变量`s`中
+    
+    // 这里发生了几件事：
+    // 1. 借用了`s`中的值，得到一个独占借用，放到临时的位置1中；
+    // 2. `1`求值放到了一个临时的位置2中；
+    // 3. `i32::to_string()` 借用了在临时位置1中的`1`去求值得到一个新的字符串，放到一个临时位置3中；
+    // 4. `String::assign_add()` 移走了位置1和位置3中的值进行求值，得到`()`。
+    //     而在求值过程中则修改了s的值。
+    s += 1.to_string();
+} // `s`超出了作用域，于是调用其析构函数，丢弃了其中的值。
+
+<span class="boring">}</span></code></pre></pre>
+<h2 id="位置"><a class="header" href="#位置">位置</a></h2>
+<p>刚刚提到一个位置(place)的概念，对应着“内存里的位置”(location in memory)，其自身还有一些额外的属性（类型、可变性等）和状态。位置和值，对应C语言中“左值”和“右值”的概念。</p>
+<p>常见的一些位置：</p>
+<ul>
+<li>
+<p><strong>变量(Variable)</strong> 声明会创建一个带名字的位置，</p>
+<ul>
+<li>局部变量的话则对应一片栈内存，</li>
+<li>全局变量对应一段静态存储区</li>
+</ul>
+</li>
+<li>
+<p>表达式求值的过程中会产生一些<strong>临时位置(Temporary)</strong>，一般会对应一片栈内存（也可能会做静态提升）。</p>
+</li>
+<li>
+<p>由 <strong>全局分配器(Global Allocator)</strong> 分配一片内存，作为位置。比如说<code>Box::new()</code>会分配一片堆内存作为位置。</p>
+</li>
+<li>
+<p>函数参数、函数返回值也有对应的位置</p>
+</li>
+<li>
+<p>一些值里又有一些小的位置，比如说一个结构体里的字段，数组中某个元素等。这些位置也会有自身的属性与状态。</p>
+</li>
+</ul>
+<p>而一个位置在运行的时候有几种状态：</p>
+<ol>
+<li>未初始化</li>
+<li>初始化了</li>
+<li>值被移走了（Copy类型的位置不存在这种情况）</li>
+<li>初始化了，其值被共享借用着</li>
+<li>初始化了，其值被独占借用着</li>
+</ol>
+<p>编译器会跟踪这些状态用于分析或者插入一些代码。比如分析是否未初始化就使用（初始化分析）、是否尝试移动一个正在被借用的值（借用检查）等。如果这些状态静态时无法分析出来，则会插入一些代码在运行时来跟踪这些状态——这里引入了一些隐形的开销，所以建议还是不要写这样的代码：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let v; // v 未初始化
+if condition {
+    v = vec![1, 2, 3]; 
+    // v 已初始化
+}
+// v 的状态初始化了或者还没有初始化
+
+
+<span class="boring">}</span></code></pre></pre>
+<p>那么大概就会转换成这样的代码</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// -&gt; 伪代码
+
+let v;
+let mut v初始化了 = false;
+
+if condition {
+    v = vec![1, 2, 3];
+    v初始化了 = true;
+}
+
+if v初始化了 { // 当v超出作用域时会插入类似这样的代码
+    mem::drop_in_place(&amp;mut v as _);
+}
+<span class="boring">}</span></code></pre></pre>
+<p>除了状态，可变性也是一个位置的重要属性。只要一个位置可变的时候，我们就可以修改该位置中的值（与类型无关），否则就是ub（也有例外，UnsafeCell）：</p>
+<ul>
+<li>mut pattern修饰的变量，比如说<code>let mut x = 1</code> 我们就可以通过<code>x</code>的可变借用修改里面的值</li>
+<li>一个结构体所在的位置可变，其字段的位置也是可变的</li>
+</ul>
+<h2 id="表达式"><a class="header" href="#表达式">表达式</a></h2>
+<p>一开始说道，一个值是从一个表达式中求值得到的，那么接下来我们再聊聊表达式。</p>
+<p>rust继承了一些函数式语言的一些特点，比如说“万物皆表达式”——除了常规的一些字面量是表达式、函数调用是表达式以外，<code>break</code>,<code>continue</code>,<code>return</code>这些控制流表达式是表达式，<code>{ let x = ...; ... }</code>,循环也是表达式。（注意：语句是块表达式组成部分，但是其本身并不是表达式）。但也有一些不那么函数式的地方，所有表达式求值都会得到一个值，但求值的过程中还可能会产生一些副作用，比如修改了其他值、求值时跳转了又或者是做了一些IO操作等。</p>
+<br /> 
+<p>尽管在rust中有各种各样的表达式，但主要可以划分成两类表达式（其实还有第三种，叫Assignee Expression）：</p>
+<ul>
+<li>
+<p><strong>位置表达式(Place Expression)</strong>，求值后得到存放在该位置上的值。目前包括：</p>
+<ul>
+<li>局部变量</li>
+<li>全局变量</li>
+<li>解引用<code>*p</code></li>
+<li>数组索引<code>arr[index]</code></li>
+<li>字段引用<code>s.field</code></li>
+</ul>
+<p>这些从一个值访问到某个位置的方式也叫<strong>路径(Path)</strong>。</p>
+</li>
+<li>
+<p><strong>值表达式(Value Expression)</strong> ，求值后会得到一个新的值，然后这个值就会被存放在某个位置上。</p>
+<p>这里值的注意的是<code>const</code>定义的常量和<code>fn</code>定义的函数都是一个值表达式，每次使用的时候都会重新求值，并放在一个新的位置上。</p>
+</li>
+</ul>
+<br /> 
+<p>一些运算符可能会要求其操作数是某种分类的表达式，或者是不同分类的表达式行为会不同，比如说：</p>
+<ul>
+<li>
+<p>赋值运算符<code>=</code>要求左操作数是一个位置表达式</p>
+</li>
+<li>
+<p>解引用运算符<code>*</code>要求操作数是一个位置表达式</p>
+</li>
+<li>
+<p>借用运算符<code>&amp;</code>和<code>&amp;mut</code>在操作数为位置表达式时，就会直接构造一个该位置的引用，借用了该位置的值；</p>
+<p>而如果操作数为值表达式时，就会先创建一个临时位置来保存求值，再引用这个临时的位置，借用求值后的值。</p>
+</li>
+<li>
+<p>如果一个位置表达式出现在函数调用的参数中时，就需要移走或拷贝该位置中的值（是否能移动和拷贝又有一些额外的规则）</p>
+</li>
+<li>
+<p>etc</p>
+</li>
+</ul>
+<p>这些导致表达式求值行为有差异地方称之为求值上下文，其实大概也可以分为 <strong>位置上下文(place context)</strong> 和 <strong>值上下文(value context)</strong> 两类，这里就不赘述了。</p>
+<h2 id="析构"><a class="header" href="#析构">析构</a></h2>
+<p>刚刚讲了一个值的出生（表达式的求值），生活（在某个位置上被借用被修改），现在来讲讲它的死亡（析构）。</p>
+<p>首先，析构函数行为由值的类型所决定，一个类型<code>T</code>的 <strong>析构函数(Destructor)</strong> 将会做这些事情：</p>
+<ol>
+<li>如果<code>T: Drop</code>，则先对其值调用<code>&lt;T as Drop&gt;::drop</code></li>
+<li>然后递归地调用其自身所有字段的析构函数，比如
+<ul>
+<li><code>T</code>是结构体，那么则按照字段的声明顺序调用字段的析构函数</li>
+<li><code>T</code>是数组，则按顺序调用元素的析构函数</li>
+<li><code>T</code>是Trait Object，则对其值调用内部实际类型的析构函数</li>
+<li>...</li>
+</ul>
+</li>
+</ol>
+<p>其中编译器将步骤1和步骤2粘起来成为完整的析构函数的操作叫做drop glue。</p>
+<br /> 
+<p>目前自动调用析构函数的时机只有两个：</p>
+<ul>
+<li>当一个变量或者临时位置超出其作用域时，就会对其值调用析构函数，将内部的值给丢弃掉；
+<ul>
+<li>其中变量的作用域一般是从声明到<code>{}</code>结束</li>
+<li>临时位置的作用域一般从表达式的位置到<code>;</code>结束</li>
+<li>还有一些更复杂的作用域构成，可以接着看reference destructors这一节。</li>
+</ul>
+</li>
+<li>对一个位置进行赋值的时候，如果该位置已经有值的时候，则先调用析构函数，再将右操作数的值移动到该位置。</li>
+</ul>
+<p>但仅有这两条规则<em>不能确保所有值的析构函数在其失效前调用</em>。这就是为什么rust事实上对内存泄露毫无办法的原因。。</p>
+<p>强调一点，这些析构函数调用的时机，在进行分析检查之前就已经确定下来了，所以借用检查分析出来的lifetime不会影响一个值的析构时机。而且应该反过来说，借用检查器需要根据析构顺序去分析借用关系。</p>
+<p>除了自动析构的时机以外，当编译器决定不下来的时候，或者想自己丢弃一个值的时候，可以通过<code>std::mem::drop_in_place</code>来手动调用其析构函数（一般搭配<code>std::mem::forget</code>, <code>ManuallyDrop</code>来使用）。</p>
+<h2 id="借用"><a class="header" href="#借用">借用</a></h2>
+<p>最具rust的特色值莫过于 <strong>借用(borrow 此处作名词)</strong> 了，借用的值<em>是一段内存的引用，借用了对应位置里的值</em>。</p>
+<p>借用检查器，会根据你的代码，分析出每个借用的借用范围（第二个借用作动词-. -），这个借用范围就是所谓的<strong>生命期(lifetime)</strong>，rust中用<code>'a</code>来表示。不过这个分析出来的借用范围并不是实际的范围，而是会稍微“长”一点，历史上rust有着几种生命期的推导方式：</p>
+<ol>
+<li>在1.31之前，生命期被推导成与借用本身的作用域同样的范围，也就是所谓的&quot;lexical lifetime&quot;，当时稍微写点复杂的代码都会被借用检查器给蠢到（</li>
+<li>而在1.31至今，借用检查器则根据rust的控制流图MIR推导出的 <strong>非词法生命期(<em>N</em>on-<em>L</em>exical <em>L</em>ifetime)</strong>，和作用域再无瓜葛（也还有，有个包含关系）。比以往精确不少，大大降低了rust的编码难度。虽然大多数时候都可以无视生命期了，但对于某些更抽象点的代码还是无能为力（比如经典的<code>Entry</code> API，和目前写不出来的<code>LendingIterator</code>的Filter组合子）</li>
+<li>未来（？），目前rust的类型系统工作组还在研究下一代的借用检查器polonius(polinius.next)，都能很好地覆盖到NLL解决不了的case。所以我还是蛮期待的。</li>
+</ol>
+<p>这里一个常见的误解，很多初学者都会将生命期和作用域混为一谈。那么我希望大家看到这里应该要能将思维转变过来了。</p>
+<br /> 
+<p>借用检查除了检查生命期期间值是否失效以外，对于目前的两种共享借用<code>&amp;</code>和独占借用<code>&amp;mut</code>，还有不同的检查项：</p>
+<ul>
+<li>
+<p>允许存在多个共享借用</p>
+</li>
+<li>
+<p>被共享借用的值不允许修改</p>
+<ul>
+<li>有特例，<code>UnsafeCell</code>。允许通过共享借用来修改值。这种共享借用可变性也叫 <strong>内部可变性(Interior Mutability)</strong>。<code>UnsafeCell</code>的值本身允许修改，与其所在的位置的可变性无关，Interior的含义不是内外的内，而是本质、内在的内。</li>
+</ul>
+</li>
+<li>
+<p>只有标记为mut的变量才能被独占借用</p>
+</li>
+<li>
+<p>在独占借用期间，不允许同时存在其它借用——noalias</p>
+<p>目前也有特例，但似乎并没有公开，有兴趣可以参考：</p>
+<ul>
+<li>目前的Unpin hack: <a href="https://github.com/rust-lang/miri/pull/1952">exclude mutable references to !Unpin types from uniqueness guarantees</a></li>
+<li>Share Aliasing?: <a href="https://hackmd.io/@CV5q1SRASEuY8WfOgd_3iQ/BkmQIn7Bs">unsafe_cell_mut</a></li>
+</ul>
+</li>
+</ul>
+<br /> 
+<p>虽然大多数生命期都能在编译期间推导出来，但在rust中我们可以写出两种生命期，一种是<code>'static</code>，一种在泛型参数列表中<code>'a</code>。后者是接口上的一些必要信息，甚至能引入一些额外的检查。</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 喜闻乐见的例子
+// 如果去掉接口名，参数名，实现，调用者能判断这三个借用之间的关系吗？
+fn longer(long: &amp;str, short: &amp;str) -&gt; &amp;str { long }
+
+// 这时候则需要通过手动标记生命期，来表示几个借用之间的关系
+fn longer&lt;'long, 'short&gt;(long: &amp;'long str, short: &amp;'short str) -&gt; &amp;'long str
+where
+    'long: 'short // 'long outlive 'short
+{ long } // 编译器再检查实现是否满足接口约束
+<span class="boring">}</span></code></pre></pre>
+<p>rust是个严格区分接口和实现的语言</p>
+<ul>
+<li>调用者从接口中得知参数和返回值之间的关系，编译器检查调用是否满足接口所描述的条款</li>
+<li>实现者通过接口声明，额外引入一些条件来实现逻辑。</li>
+</ul>
+<p>当然，其实在实际编码的过程中，就我体验是比较少需要自己手动标记生命期的。因为有一些明确的<strong>生命期消除规则(lifetime elision)</strong>，在不标记生命期的情况下约定了一些参数和返回值的关系。</p>
+<h2 id="类型"><a class="header" href="#类型">类型</a></h2>
+<p>我们再来讲讲类型。在rust中，所有的表达式、值与位置都会指定一个类型，类型赋予了他们意义，他们都不能脱离于类型来讨论：</p>
+<ul>
+<li>
+<p>类型之于表达式来说，决定了其求值的行为，得到何值。
+比如当我们写下<code>a + b</code>的时候，只有知道了<code>a</code>和<code>b</code>的类型，才能得知这个表达式的含义以及如何求值。</p>
+</li>
+<li>
+<p>类型之于一个值来说，决定了其使用方式，以及析构行为。
+比如当我们使用一个值<code>a</code>的时候，只有知道了<code>a</code>的类型，才能知道<code>a</code>能否使用，能否作为参数应用于某个函数中。</p>
+</li>
+<li>
+<p>类型之于一个位置来说，决定了其在内存中的<strong>布局(Layout)</strong>，包括<strong>大小(Sized)<strong>与</strong>对齐(Align)</strong>。
+比如当我们声明一个局部变量<code>x</code>的时候，只有知道<code>x</code>的类型，才知道如何分配内存给<code>x</code>。</p>
+</li>
+</ul>
+<br /> 
+<p>rust中有三种比较特殊的类型，一种是零大小类型(ZST)，一种是<code>!</code>和“无变体枚举”(Zero-variant Enums)，一种是动态大小类型(DST)</p>
+<ul>
+<li>
+<p>零大小类型指的是那些大小为0的类型。分配器和一些数据结构常常需要为ZST进行特化，比如<code>GlobalAlloc::alloc</code>就要求只能为非零大小的那些布局分配内存；而数据结构则要考虑ZST是否要进行分配内存的操作。值得注意的是，ZST虽然0大小，但对齐不一定是0，比如<code>[T; 0]</code>的对齐是<code>T</code>的对齐，意味着<code>[T; 0]</code>的地址也要是<code>align_of::&lt;T&gt;()</code>的倍数。</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>println!(&quot;{:p}&quot;, Box::new([1i32, 0])); // 输出 0x4
+<span class="boring">}</span></code></pre></pre>
+</li>
+<li>
+<p><code>!</code>和“无变体枚举”，是一种“求值永远都拿不到结果”的类型，比如<code>panic!()</code>, <code>break</code>等表达式，他们总会在求值的中途中断，永远得不到结果——当然也是一种零长类型。</p>
+</li>
+<li>
+<p>动态大小类型，我们也会经常遇到，比如trait object类型<code>dyn Trait</code>，和切片类型<code>[T]</code>（组合之后得到的<code>Mutex&lt;[u8]&gt;</code>之类的也是DST）。</p>
+<p>这些类型的布局甚至析构函数在运行时才确定，在访问其值的位置时，就需要带上一些<strong>元数据(Metadata)</strong>，这些元数据就和指针放在一起：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// std::mem::Pointee
+pub trait Pointee {
+    // pointee的元数据的类型
+    type Metadata: Copy + Send + Sync + Ord + Hash + Unpin;
+}
+
+impl&lt;T&gt; *const T {
+    // rust中指针都可以分为两部分，一部分是数据指针，一部分是Pointee的元数据
+    // 
+    //  ┌─────────────────────────┐
+    //  │ the value of DST in mem │
+    //  └▲────────────────────────┘
+    //   │
+    //  ┌┴────────┬────────────┐
+    //  │ pointer │  metadata  │
+    //  └─────────┴────────────┘
+    //
+    pub fn to_raw_parts(self) -&gt; (*const (), &lt;T as Pointee&gt;::Metadata)
+}
+<span class="boring">}</span></code></pre></pre>
+<p>那么目前就只有三种类型的元数据，<code>()</code>, <code>DynMetaData&lt;dyn trait&gt;</code>, <code>usize</code>:</p>
+<ul>
+<li>对于固定大小类型来说，他们的元数据类型为<code>()</code>，于是他们的指针就叫<strong>窄指针(Thin Pointer)</strong></li>
+<li>对于trait object来说，他们的元数据类型为<code>DynMetadata&lt;Self&gt;</code>，是一个虚表指针，包含了大小、对齐、析构函数以及trait中方法的函数指针。</li>
+<li>对于切片类型<code>[T]</code>，他们的对齐和析构函数都是确定的，于是他们的元数据仅需要一个大小信息，类型为<code>usize</code>。</li>
+<li>而对于复合的DST来说，他们的元数据类型则继承自内部的DST，比如说<code>&lt;Mutex&lt;[T]&gt; as Pointee&gt;::Metadata == usize</code>。</li>
+<li>还有一种特殊的DST是external type，一般来自ffi，其元数据类型为<code>()</code>。也就是说Rust侧无法得知其内存任何信息，只能通过ffi去操作对应的内存。</li>
+</ul>
+<p>指向DST的指针因为包含了额外的元数据，所以也称之为<strong>宽指针(Wide Pointer)</strong>。</p>
+</li>
+</ul>
+<h2 id="trait"><a class="header" href="#trait">trait</a></h2>
+<p>刚刚说到，类型决定了表达式、值、位置的含义与行为，那么如何定义这些的含义与行为呢？答案是通过trait，trait是rust类型系统中不可或缺的一部分。</p>
+<ul>
+<li>编译器通过trait来为类型附加上一些语言内建的语法规则与语义，比如说<code>Copy</code>, <code>Send</code>, <code>Sync</code>, <code>Unpin</code>, <code>Fn</code>等。</li>
+<li>用户则可以通过trait来为类型定义一些额外的行为，通过trait来对外暴露接口。</li>
+</ul>
+<p>不过trait的详细用法这里就不展开了，这篇文章基本已经把我想说的都写下来了（</p>
+<br />
+<hr />
+<p>等一下，所以，所有权在哪呢？</p>
+<p>——所有权其实并不存在，在语言里面并没有一条叫做所有权的规则，所有权的概念只存在于程序员的意识里。这种意识反映到代码里面就是一些<em>责权分明</em>的代码，会明确各个值的使用范围，以及值与值之间的关系。</p>
+<p>rust的语言规则和编译器则会强迫你思考清晰这些关系，否则整个程序就会变得很糟糕，很难用——当然rust也会帮助你去思考这些事情。</p>
+<br />
+<blockquote>
+<p>其实在drop check的<a href="https://github.com/rust-lang/rfcs/blob/master/text/0769-sound-generic-drop.md#when-does-one-type-own-another">rfcs</a>中提到了所有权规则，</p>
+<blockquote>
+<p>The definition of the Drop-Check Rule used the phrase &quot;if the type owns data of type D&quot;.
+This criteria is based on recursive descent of the structure of an input type E.</p>
+<ul>
+<li>If E itself has a Drop implementation that satisfies either condition (A.) or (B.) then add, for all relevant 'a, the constraint that 'a must outlive the scope of the value that caused &gt;  the recursive descent.</li>
+<li>Otherwise, if we have previously seen E during the descent then skip it (i.e. we assume a type has no destructor of interest until we see evidence saying otherwise). This check prevents infinite-looping when we encounter recursive references to a type, which can arise in e.g. <code>Option&lt;Box&lt;Type&gt;&gt;</code>.</li>
+<li>Otherwise, if E is a struct (or tuple), for each of the struct's fields, recurse on the field's type (i.e., a struct owns its fields).</li>
+<li>Otherwise, if E is an enum, for each of the enum's variants, and for each field of each variant, recurse on the field's type (i.e., an enum owns its fields).</li>
+<li>Otherwise, if E is of the form <code>&amp; T</code>, <code>&amp;mut T</code>, <code>* T</code>, or <code>fn (T, ...) -&gt; T</code>, then skip this E (i.e., references, native pointers, and bare functions do not own the types they refer to).</li>
+<li>Otherwise, recurse on any immediate type substructure of E. (i.e., an instantiation of a polymorphic type <code>Poly&lt;T_1, T_2&gt;</code> is assumed to own T_1 and T_2; note that structs and enums do not fall into this category, as they are handled up above; but this does cover cases like <code>Box&lt;Trait&lt;T_1, T_2&gt;+'a&gt;</code>).</li>
+</ul>
+</blockquote>
+<p>以及<a href="https://doc.rust-lang.org/stable/std/marker/struct.PhantomData.html"><code>PhantomData</code></a>中也有所谓own的说法。</p>
+<blockquote>
+<p>Zero-sized type used to mark things that “act like” they own a T.</p>
+</blockquote>
+<p>不过由于各种历史原因，事实上Rustc目前并没有真正的实际应用这些规则。（目前有个<a href="https://github.com/rust-lang/rust/pull/103413">PR</a>正在跟进这个事，merge之后我再来修改这篇文章吧）</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="Rust基础概念.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="当我们在rust中讨论unsafe的时候，究竟是在说什么.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="Rust基础概念.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="当我们在rust中讨论unsafe的时候，究竟是在说什么.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

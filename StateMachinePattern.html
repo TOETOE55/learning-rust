@@ -1,0 +1,912 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>State machine Pattern - Rust写作计划</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="theme/learningrust.css">
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="简介.html">简介</a></li><li class="chapter-item expanded "><a href="Rust整体介绍.html"><strong aria-hidden="true">1.</strong> Rust整体介绍</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="来谈谈Rust的大目标和原则.html"><strong aria-hidden="true">1.1.</strong> 来谈谈Rust的大目标和原则</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">1.2.</strong> Rust项目，团队，工作组，社区，基金会，以及如何贡献代码</a></li></ol></li><li class="chapter-item expanded "><a href="Rust基础概念.html"><strong aria-hidden="true">2.</strong> Rust基础概念</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="当我们在rust中讨论“所有权”的时候，究竟是在说什么.html"><strong aria-hidden="true">2.1.</strong> 当我们在Rust中讨论“所有权”的时候，究竟是在说什么</a></li><li class="chapter-item expanded "><a href="当我们在rust中讨论unsafe的时候，究竟是在说什么.html"><strong aria-hidden="true">2.2.</strong> 当我们在Rust中讨论unsafe的时候，究竟是在说什么</a></li><li class="chapter-item expanded "><a href="稍微聊聊Rust中的Invariant.html"><strong aria-hidden="true">2.3.</strong> 稍微聊聊Rust中的Invariant —— 那些必须保持的性质</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.4.</strong> Rust程序的组成</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.5.</strong> Rust的类型系统(type/trait/borrow checker等)</a></li><li class="chapter-item expanded "><a href="rust中的implItem.html"><strong aria-hidden="true">2.6.</strong> Rust中的impl item</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.7.</strong> 宏</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.8.</strong> 库/链接</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.9.</strong> 工具链相关</a></li></ol></li><li class="chapter-item expanded "><a href="一些语言和库的细节.html"><strong aria-hidden="true">3.</strong> 一些语言和库的细节</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="讲讲让我熬了几天夜的DropCheck.html"><strong aria-hidden="true">3.1.</strong> 讲讲让我熬了几天夜的Drop Check</a></li><li class="chapter-item expanded "><a href="RustPinApi真难啊.html"><strong aria-hidden="true">3.2.</strong> Rust Pin api真难啊</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">3.3.</strong> 多线程</a></li></ol></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">4.</strong> 设计模式以及编码技巧</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="StateMachinePattern.html" class="active"><strong aria-hidden="true">4.1.</strong> State machine Pattern</a></li><li class="chapter-item expanded "><a href="Rust设计模式探索_crate间接口相互调用.html"><strong aria-hidden="true">4.2.</strong> crate间接口相互调用</a></li></ol></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">5.</strong> 优秀开源项目架构介绍</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">5.1.</strong> rust analyzer</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">5.2.</strong> rustc</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">5.3.</strong> servo</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust写作计划</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="state-machine-pattern"><a class="header" href="#state-machine-pattern">State machine Pattern</a></h1>
+<p>程序界流传着一句名言</p>
+<blockquote>
+<p>算法 + 数据结构 = 程序</p>
+<p>--<em>Niklaus</em></p>
+</blockquote>
+<p>我望文生义一波，擅自将这句话解读为：<strong>程序可以分为 控制 和 数据 两部分</strong>。所以接下来这篇文章会对这句话中的“算法”替换成“代码”、“控制流”、“过程”、“函数”等，带有“控制”行为的概念。</p>
+<p>“算法”相比于“数据结构“来说更加抽象。后者可以有”实体“，有数据和结构，也对其进行修改；但“算法”就不太行了（或者很难），除非你用的是类似lisp那样的语言，“代码即数据”，可以直接将代码当做列表的数据进行操作。</p>
+<p>所以最近一直在思考如何描述“过程”或者“控制流”，使得他们可以像数据结构一样变得更加具体一些，变得更容易管理一些。为了解决这些问题：</p>
+<ol>
+<li>我们的项目里当然也存在着大量的数据结构 和 各种各样的过程和函数，前者我们将其放入一个套一个的所谓“容器”里进行管理，但是后者，一些正在“运行”的东西，我们其实并没有一个很好的手段去管理他们，尤其是在并发的情况下。</li>
+<li>有时候单个函数动辄上千行，成百上千个条件；后面的语句可能会依赖前面语句的一些状态，在不断迭代的过程中很容易就会破坏这些约束从而造成bug。我们是否有手段将这些代码行为描述起来，从而可以更好地验证后续修改没有bug呢？</li>
+</ol>
+<p>要思考这些问题，我们就要思考 数据 和 代码 之间究竟有什么不同，以及之间有什么关系。</p>
+<h2 id="churchscott-encoding或是cps"><a class="header" href="#churchscott-encoding或是cps">Church/Scott encoding或是CPS</a></h2>
+<p>如果你对functional programing比较了解，那就会发现，在函数式编程中习惯用很多等价的形式去表示一个数据结构。其中比较简单而闻名的就是 Church encoding 和 Scott encoding了。</p>
+<h3 id="church-number"><a class="header" href="#church-number">Church number</a></h3>
+<p>church encoding用函数来定义自然数：</p>
+<div class="table-wrapper"><table><thead><tr><th>数字</th><th>函数定义</th><th>lambda表达式</th></tr></thead><tbody>
+<tr><td><code>0</code></td><td><code>zero(f, x) = x</code></td><td><code>λf.λx.x</code></td></tr>
+<tr><td><code>1</code></td><td><code>one(f, x) = f(x)</code></td><td><code>λf.λx.f x</code></td></tr>
+<tr><td><code>2</code></td><td><code>two(f, x) = f(f(x))</code></td><td><code>λf.λx.f (f x)</code></td></tr>
+<tr><td><code>3</code></td><td><code>three(f, x) = f(f(f(x)))</code></td><td><code>λf.λx.f (f (f x))</code></td></tr>
+<tr><td>...</td><td>...</td><td>...</td></tr>
+</tbody></table>
+</div>
+<p>那么数字运算也可以用函数来定义：</p>
+<div class="table-wrapper"><table><thead><tr><th>运算</th><th>函数定义</th><th>lambda表达式</th></tr></thead><tbody>
+<tr><td>加</td><td><code>plus(m, n) = (f, x) =&gt; m(f, n(f, x))</code></td><td><code>λm.λn.λf.λx.m f (n f x)</code></td></tr>
+<tr><td>后继</td><td><code>succ(n) = (f, x) =&gt; f(n(f(x)))</code></td><td><code>λn.λf.λx.f (n f x)</code></td></tr>
+<tr><td>乘</td><td><code>mult(m, n) = (f, x) =&gt; m((y) =&gt; n(f, y), x)</code></td><td><code>λm.λn.λf.λx.m (n f) x</code></td></tr>
+<tr><td>乘方</td><td><code>exp(m, n) = (f, x) =&gt; n(m, f)(x)</code></td><td><code>λm.λn.n m</code></td></tr>
+<tr><td>...</td><td>...</td><td>...</td></tr>
+</tbody></table>
+</div>
+<p>看起来很抽象？那我们来直接拿一个例子来运算一下：</p>
+<pre><code>1 + 2
+= plus(one, two)
+= (f, x) =&gt; one(f, two(f, x))   // 展开`plus`定义
+= (f, x) =&gt; f(two(f, x))		// 展开`one`定义
+= (f, x) =&gt; f(f(f(x)))			// 展开`two`定义
+= three
+= 3
+</code></pre>
+<p>church encoding除了定义了自然数以外，还定义了bool, list, pair甚至还有一些命题，有兴趣可以直接移步到<a href="https://en.wikipedia.org/wiki/Church_encoding">Church encoding</a></p>
+<h3 id="scott-encoding"><a class="header" href="#scott-encoding">Scott encoding</a></h3>
+<p><a href="https://en.wikipedia.org/wiki/Mogensen%E2%80%93Scott_encoding">scott encoding</a>就是在church encoding上给出了更加通用的用函数编码数据结构的方式。</p>
+<p>比如定义一个只有三个构造子的类型：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>enum Data&lt;A, B, C&gt; {
+    C1(),
+    C2(A),
+    C3(B, C)
+}
+<span class="boring">}</span></code></pre></pre>
+<p>那么，<code>C1</code>, <code>C2</code>, <code>C3</code>就可以用函数来编码</p>
+<div class="table-wrapper"><table><thead><tr><th>构造子</th><th>函数</th></tr></thead><tbody>
+<tr><td><code>C1</code></td><td><code>C1() = (f1, f2, f3) =&gt; f1()</code></td></tr>
+<tr><td><code>C2</code></td><td><code>C2(a) = (f1, f2, f3) =&gt; f2(a)</code></td></tr>
+<tr><td><code>C3</code></td><td><code>C3(b, c) = (f1, f2, f3) =&gt; f3(b, c)</code></td></tr>
+</tbody></table>
+</div>
+<p>那么下面的模式匹配，相当于<code>value(f1, f2, f3)</code>。</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>match value {
+    C1() =&gt; f1(),
+    C2(a) =&gt; f2(a),
+    C3(b, c) = f3(b, c)
+}
+<span class="boring">}</span></code></pre></pre>
+<p>这其实不难理解。代入计算就可以知道</p>
+<ul>
+<li>当<code>value</code>是<code>C1</code>时，那么<code>value(f1, f2, f3) = f1()</code>；</li>
+<li>当<code>value</code>是<code>C2(a)</code>，那么<code>value(f1, f2, f3) = f2(a)</code>；</li>
+<li>当<code>value</code>是<code>C3(b, c)</code>，那么<code>value(f1, f2, f3) = f3(b, c)</code>；</li>
+</ul>
+<p>当然如果大家有闲情逸致的话可以用scott encoding的方法去编码一下自然数（然后就会发现你得到了Church number）。</p>
+<h3 id="continuation-passing-style"><a class="header" href="#continuation-passing-style">Continuation-passing Style</a></h3>
+<p>上面的对数据的编码方式，都是用函数去表示数据结构。其实我们有一个更加深刻的东西来揭示这种表示的原理，也就是所谓的CPS变换。CPS变换大概就是说：</p>
+<blockquote>
+<p>对于任意<code>x: A</code>，都有一个等价的表示<code>f: for&lt;R&gt; fn(fn(A) -&gt; R) -&gt; R</code>，其中<code>f = (k) =&gt; k(x)</code>，<code>x = f((y) =&gt; y)</code>.</p>
+</blockquote>
+<p>这里<code>x</code>是一个数据，<code>f</code>是一个函数，他们可以相互表示。</p>
+<p>BTW，CPS的具体应用我这里就不展开了，我只是想表述一件事： <strong>本质上，我们可以说 函数 和 数据 其实都是等价的，可以相互表示的。</strong> 函数通过描述如何消费来定义数据，数据结构通过描述如何构造来定义数据。</p>
+<p>但在日常编程的时候，一般会认为 函数 相对于 具体的数据结构来说 会更难使用 且 心智负担会更重一些。那么我们又是否可以利用这个这一点，用数据结构来表示代码呢？</p>
+<h2 id="迭代遍历-和-解释器模式"><a class="header" href="#迭代遍历-和-解释器模式">迭代、遍历 和 解释器模式？</a></h2>
+<p>我们来回过头来思考一下，我们是通过什么来决定代码的控制流的。</p>
+<h3 id="walk-through-on-your-data-structure"><a class="header" href="#walk-through-on-your-data-structure">Walk through on your data structure</a></h3>
+<ol>
+<li>
+<p>当我们写出一个迭代的控制流的时候，通常离不开一个列表（一个线性的数据结构）。我们会遍历这个列表然后运算得到一些东西。反过来说，如果我们手里只有一个列表的时候，我们除了迭代也写不出其它有意义的控制流了。</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut arr = [1,2,3,4,5];
+let iter = arr
+    .iter()
+    .map(|x| x * 2)
+    .filter(|x| x &lt; 7);
+
+// 迭代，其实是遍历了arr这个数组
+for x in iter {
+    println!(&quot;{x}&quot;);
+}
+    
+<span class="boring">}</span></code></pre></pre>
+</li>
+<li>
+<p>同样的，当我们手里有一颗树的时候，我们可能用这棵树来查找，或者来做其它事情。但由这棵树导出的控制流，无非都是用来遍历这颗树的。</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// 普普通通二叉树
+enum BinTree&lt;T&gt; {
+    Leaf(T),
+    Node(Box&lt;Self&gt;, Box&lt;Self&gt;)
+}
+
+/// 普普通通用于遍历二叉树的Visitor
+trait BinTreeVisitor&lt;T&gt; {
+    fn visit_leaf(&amp;mut self, t: &amp;T) {}
+    fn visit_node(&amp;mut self, left: &amp;BinTree&lt;T&gt;, right: &amp;BinTree&lt;T&gt;) {
+        match left {
+            Leaf(t) =&gt; self.visit_leaf(t),
+            Node(l, r) =&gt; self.visit_node(l, r),
+        }
+        
+        match right {
+            Leaf(t) =&gt; self.visit_leaf(t),
+            Node(l, r) =&gt; self.visit_node(l, r),
+        }
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+</li>
+</ol>
+<p><strong>我们的控制流取决于我们处理的数据的结构，数据的结构决定程序的控制流</strong>。</p>
+<h3 id="解释器模式dsl"><a class="header" href="#解释器模式dsl">解释器模式——DSL</a></h3>
+<p>将刚刚这句话贯彻得最彻底的莫过于设计模式中的“解释器模式”了。为了表示某种特定功能的程序，需要设计特定的数据结构，遍历即解释；然后程序的行为（控制流）取决输入的数据的结构长什么样。</p>
+<p>DSL就是解释器模式最常见的应用，比如我们用的diesel就是DSL（强类型的DSL）：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 构造了一个dsl结构
+// `update_dsl: UpdateStatement&lt;Filter&lt;user, Like&lt;email, String&gt;&gt;, _, &lt;Eq&lt;banned, bool&gt;&gt;::Changeset&gt;`
+let update_dsl = update(users.filter(email.like(&quot;%@spammer.com&quot;)))
+    .set(banned.eq(true)); 
+// 解释执行
+update_dsl.execute(&amp;mut connection); 
+<span class="boring">}</span></code></pre></pre>
+<p>或者我们用语法树简单实现一个四则运算的计算器，本质上也是解释器模式：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>enum Expression {
+    /// 0,1,2
+    Lit(i64) 
+    /// a + b
+    Plus(Box&lt;Self&gt;, Box&lt;Self&gt;),
+    /// a - b
+    Minus(Box&lt;Self&gt;, Box&lt;Self&gt;),
+    /// a * b
+    Multi(Box&lt;Self&gt;, Box&lt;Self&gt;),
+    /// a / b
+    Divi(Box&lt;Self&gt;, Box&lt;Self&gt;),
+}
+
+impl Expression {
+    fn eval(self) -&gt; Result&lt;i64, DiviByZero&gt; { 
+        match self {
+            /* eval 的控制流决定于 Expression 这棵树长什么样 */ 
+        }
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>也有比解释器模式稍微弱一点的模式——访问者模式其实也是一种data-driven的模式。</p>
+<p>上一节说的是可以用函数/过程来表示数据结构，那么这一节就是一个“对偶”的表述，<strong>我们可以用数据结构决定函数/过程的控制流</strong>。那么在Rust里，我们是否也能用某种数据结构来解决文章开头的两个问题呢——管理“运行中”的实体；抽象复杂的控制流。</p>
+<p>那么到这里其实我忍不住再曲解一下文章开头的那句话：</p>
+<ol>
+<li>解读1：程序 分为 控制 和 数据 两部分；</li>
+<li>解读2：<strong>算法 和 数据 是 程序 的一体两面。</strong></li>
+</ol>
+<p>是不是冯氏架构其实也是想表达这个事情呢？我冥冥中有这样的感觉。。</p>
+<h2 id="rust中的状态机"><a class="header" href="#rust中的状态机">Rust中的状态机</a></h2>
+<p>说实话，我其实是为了想介绍Rust中的状态机，才牵强地写出了前面的内容。不妨把某个状态机看作一种特化的数据结构时，其实也符合上面给的结论，状态机可以在某种程度上表示控制流——<strong>将控制流编码到状态机的节点和边上</strong>。</p>
+<p>Rust的API中很多时候都能看到状态机的身影，状态机几乎无处不在。</p>
+<h3 id="asyncawait状态机"><a class="header" href="#asyncawait状态机"><code>async</code>/<code>.await</code>状态机</a></h3>
+<p>Rust中自带状态机的“语法糖”，<code>async</code>/<code>.await</code>，用于编写异步代码。</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let fut = async {
+    fut_a().await;
+    
+    for _ in 0..10 {
+        fut_b().await;
+    }
+};
+<span class="boring">}</span></code></pre></pre>
+<p>这个async block大概会编译成下面的代码，为了方便理解，简化的规则：</p>
+<ul>
+<li>每个<code>.await</code>会编译成一个enum的Variant，会存储当前的局部变量以及<code>.await</code>的操作数</li>
+<li><code>.await</code>之间的代码则会插入到match的对应分支中</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct Fut {
+    _marker: PhantomPinned,
+    state: FutState,
+}
+
+enum FutState {
+    Start,
+    S1(fut_a),
+    S2(Range&lt;i32&gt;, fut_b)
+    Done(Option&lt;()&gt;), // result
+}
+
+impl Future for Fut {
+    type Output = ();
+    fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'a&gt;) -&gt; Poll&lt;Self::Output&gt; {
+        let this = unsafe { Pin::into_inner_unchecked(self) };
+        loop {
+            match &amp;mut this.state {
+                /// Start --&gt; S1
+                Start =&gt; {
+                    this.state = S1(fut_a());
+                }
+                
+                /// S1 --&gt; S2 or
+                /// S1 --&gt; Done
+                S1(fut_a) =&gt; {
+                    let fut_a = unsafe { Pin::new_unchecked(fut_a) };
+                    ready!(fut_a.poll(cx));
+                    let mut range = 0..10;
+                    if range.next().is_some() {
+                        this.state = S2(range, fut_b());
+                    } else {
+                        this.state = Done(Some(()));
+                    }
+                }
+                
+                /// S2 --&gt; S2 or
+                /// S2 --&gt; Done
+                S2(mut range, fut_b) =&gt; {
+                    let fut_b = unsafe { Pin::new_unchecked(fut_b) };
+                    ready!(fut_b.poll(cx));
+                    if range.next().is_some() {
+                        this.state = S2(range, fut_b());
+                    } else {
+                        this.state = Done(Some(()));
+                    }
+                }
+                
+                Done(result) =&gt; {
+                    return result.take().expect(&quot;Fut::poll after is done&quot;);
+                }
+            }
+        }
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>就可以看做下面这个状态机</p>
+<ul>
+<li>将enum的variant看作是状态机的一个<strong>节点</strong>，</li>
+<li>将<code>.await</code>之间的代码看作状态机的<strong>边</strong></li>
+<li>另外在<code>S1</code>和<code>S2</code>状态中<code>fut_a</code>和<code>fut_b</code>自己内部也可能有自己的一个状态机</li>
+</ul>
+<p>异步控制流则相当于“按需”地将这个状态机从<code>Start</code>状态推进到<code>Done</code>状态：</p>
+<p><a href="https://mermaid.live/edit#pako:eNqdkc1qwzAQhF9F6BCk4pjYRx166hv4lqqEjbV2DdbK2BIkhLx7ZTmmPxQfchBoZ0ajD_bGa2eQKz558PjWQTuC1aR9VShWFaIJ_gQyCWUUSjECtSgOeV4cZMZm-5zs-by_fLD9_jW-WxoeA1MpB_ng-l7UF5l302lAMh21Qv6Mlv9GRwRzFZJpTWy3Yywh5IQXL5I_OYu_emaOZ4rI0VpUPoCWmvMG-lbyz4cb4OUK_kTNgs0zbnG00Jm4zVtMMs39J1rUXMWrwQZC7zXXdI9RCN5VV6q58mPAjIfBfO9_FQego3NxbKCf8P4FNHqyiQ"><img src="https://mermaid.ink/img/pako:eNqdkc1qwzAQhF9F6BCk4pjYRx166hv4lqqEjbV2DdbK2BIkhLx7ZTmmPxQfchBoZ0ajD_bGa2eQKz558PjWQTuC1aR9VShWFaIJ_gQyCWUUSjECtSgOeV4cZMZm-5zs-by_fLD9_jW-WxoeA1MpB_ng-l7UF5l302lAMh21Qv6Mlv9GRwRzFZJpTWy3Yywh5IQXL5I_OYu_emaOZ4rI0VpUPoCWmvMG-lbyz4cb4OUK_kTNgs0zbnG00Jm4zVtMMs39J1rUXMWrwQZC7zXXdI9RCN5VV6q58mPAjIfBfO9_FQego3NxbKCf8P4FNHqyiQ?type=png" alt="" /></a></p>
+<h3 id="尾调用优化和状态机"><a class="header" href="#尾调用优化和状态机">尾调用优化和状态机</a></h3>
+<p>当然，我们还可以用状态机来描述其它控制流，比如说用来做尾递归的优化。做法其实和<code>async</code>/<code>.await</code>类似，也需要将控制流映射到一个状态机上。</p>
+<p>一个比较经典的尾调用例子，如果没有尾调用优化的话，这个<code>is_odd(n)</code>的空间复杂度是<code>S(n) = O(n)</code>的，因为每个函数调用都会增加<code>O(1)</code>的栈内存：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn is_odd(n: u64) -&gt; bool {
+    match n {
+        0 =&gt; false,
+        1 =&gt; true,
+        /// 尾调用了`is_even`
+        n =&gt; is_even(n - 1)
+    }
+}
+
+fn is_odd(n: u64) -&gt; bool {
+    match n {
+        0 =&gt; true,
+        1 =&gt; false,
+        /// 尾调用了`is_odd`
+        n =&gt; is_odd(n - 1)
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>如果描述成状态机的话，大概是下图的样子（比如调用<code>is_odd(n)</code>）：</p>
+<ul>
+<li>整个调用链上的每一个尾调用作状态机的状态</li>
+<li>最终结果作为终态</li>
+<li>第一个调用作为初态</li>
+<li>尾调用前的语句作为边</li>
+</ul>
+<p><a href="https://mermaid.live/edit#pako:eNptj08LwjAMxb9KyVG2g9einvQwEAS9aT2ENdPC2o7-EWTsu9sxy4aYU_J775Gkh9pKAg4-YKC9wodDLQxLJZWjOihr2PE8kdvqzspyxyp_knJClT-8yOQ-4a9hpJwZVrL10jjHf8ScTCtGZbP9k1toUIAmp1HJdHo_OgWEJ2kSwFMrqcHYBgHCDMmKMdjL29TAg4tUQOzk_CzwBlufaIfmam2ehw84mFRc"><img src="https://mermaid.ink/img/pako:eNptj08LwjAMxb9KyVG2g9einvQwEAS9aT2ENdPC2o7-EWTsu9sxy4aYU_J775Gkh9pKAg4-YKC9wodDLQxLJZWjOihr2PE8kdvqzspyxyp_knJClT-8yOQ-4a9hpJwZVrL10jjHf8ScTCtGZbP9k1toUIAmp1HJdHo_OgWEJ2kSwFMrqcHYBgHCDMmKMdjL29TAg4tUQOzk_CzwBlufaIfmam2ehw84mFRc?type=png" alt="" /></a></p>
+<p>同样按照<code>async</code>/<code>.await</code>的映射规则，可以得到下面的代码：</p>
+<ul>
+<li>将状态机的状态映射为enum的Variant</li>
+<li>将状态机的边映射为Variant之间的转换</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>enum OddEvenState {
+    IsOdd(u64),
+    IsEven(u64),
+    Return(bool)
+}
+
+impl OddEvenState {
+    fn trampoline(mut self) -&gt; bool {
+        loop { 
+            match self {
+                /// IsOdd -&gt; [*]
+                /// IsOdd -&gt; IsEven
+                IsOdd(n) =&gt; {
+                    match n {
+                        0 =&gt; self = Return(false),
+                        1 =&gt; self = Return(true),
+                        n =&gt; self = IsEven(n - 1),
+                    }
+                }
+                /// IsEven -&gt; [*]
+                /// IsEven -&gt; IsOdd
+                IsEven(n) =&gt; {
+                    match n {
+                        0 =&gt; self = Return(true),
+                        1 =&gt; self = Return(false),
+                        n =&gt; self = IsOdd(n - 1),
+                    }
+                }
+
+                Return(res) =&gt; {
+                    break res;
+                }
+            }
+        }
+    }
+}
+
+fn is_odd(n: u64) -&gt; bool {
+    IsOdd(n).trampoline()
+}
+
+
+fn is_even(n: u64) -&gt; bool {
+    IsEven(n).trampoline()
+}
+<span class="boring">}</span></code></pre></pre>
+<p>这段优化后的代码空间复杂度则降为了<code>S(n) = O(1)</code>，因为每个状态的变更都不会增加内存使用。</p>
+<h3 id="类型上的状态机"><a class="header" href="#类型上的状态机">类型上的状态机</a></h3>
+<p>刚刚说的这两种都是将状态编码到enum Variant上，这种做法在其它语言也是可以做的，比如C其实很多时候也大量应用这种方式。但对于Rust来说还有一种得天独厚的编码方式——<strong>将状态编码到类型上</strong>——这得益于rust的affine type system，除了Copy类型的值，其它值最多只能使用一遍，这可以保证状态转化的唯一性。</p>
+<p>比如说有个状态<code>A</code>到状态<code>B</code>的转换，在rust中就可以写成：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct A;
+struct B;
+fn trans(a: A) -&gt; B { ... }
+<span class="boring">}</span></code></pre></pre>
+<p>状态<code>A</code>一旦转换成<code>B</code>之后，原来的<code>A</code>被消耗了，无法再被使用；我们也无法得到多个<code>B</code>。我们无需考虑<code>A</code>在被消耗后的情况。</p>
+<p>而如果考虑状态<code>A</code>到状态<code>B</code>再到<code>A</code>的转换，还可以考虑在<code>B</code>中持有<code>&amp;mut A</code>，表示对<code>A</code>的独占，在<code>B</code>结束后，状态又能回到<code>A</code>：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct A;
+struct B&lt;'a&gt;(&amp;'a mut A);
+
+fn trans&lt;'a&gt;(&amp;'a mut A) -&gt; B&lt;'a&gt; {...}
+<span class="boring">}</span></code></pre></pre>
+<h4 id="tcplistner和tcpstream"><a class="header" href="#tcplistner和tcpstream"><code>TcpListner</code>和<code>TcpStream</code></a></h4>
+<p>rust中TCP Socket的API，我觉得就很好地体现了这种状态机的应用。首先，TCP Socket的状态机可以描述为：</p>
+<ul>
+<li><code>TcpListner</code>表示欢迎套接字</li>
+<li><code>TcpStream</code>表示连接套接字</li>
+<li>如果A进程要监听连接的话则通过<code>bind</code>先创建一个<code>TcpListner</code>
+<ul>
+<li><code>TcpListner</code>监听到建立连接B进程的请求，则会通过<code>accept</code>创建一个<code>TcpStream</code></li>
+</ul>
+</li>
+<li>对于B进程来说则可以通过<code>connect</code>创建一个与A通信的<code>TcpStream</code></li>
+<li>两种套接字都可以关闭</li>
+</ul>
+<p><a href="https://mermaid.live/edit#pako:eNp1Ub1OAzEMfpXIE6BW7BmYGNnKBGEIia-NuDinnE8IVZVAYkAgISYGeAkmJOB1uPY1SBtajhY8RLG_H32yx2CCRZBQs2bcd3oYtVckUh3vnIh-f08cmurA1YyEUYpTR3YDHnBE7aUwgQgNZ7wj27TRxmD1P3FpmGlbJnWM25lOgVFENxyxCEVXnOF5Zdnn2137cN_ePLcf79PHl9nT9cp5dvs6vbxKkzqYM_zOgWQX5qtUmbueKb129zy6DvFX_LSXtIky1H8araPQA4_Ra2fTDcbzmQIeoUcFMn0tFropWYGiSaLqhsPgggxIjg32oKnsz9VAFrqs07TSdBTCsp98AT4oqBc"><img src="https://mermaid.ink/img/pako:eNp1Ub1OAzEMfpXIE6BW7BmYGNnKBGEIia-NuDinnE8IVZVAYkAgISYGeAkmJOB1uPY1SBtajhY8RLG_H32yx2CCRZBQs2bcd3oYtVckUh3vnIh-f08cmurA1YyEUYpTR3YDHnBE7aUwgQgNZ7wj27TRxmD1P3FpmGlbJnWM25lOgVFENxyxCEVXnOF5Zdnn2137cN_ePLcf79PHl9nT9cp5dvs6vbxKkzqYM_zOgWQX5qtUmbueKb129zy6DvFX_LSXtIky1H8araPQA4_Ra2fTDcbzmQIeoUcFMn0tFropWYGiSaLqhsPgggxIjg32oKnsz9VAFrqs07TSdBTCsp98AT4oqBc?type=png" alt="" /></a></p>
+<p>那么在rust std中就可以设计出对应的接口：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span>
+<span class="boring">fn main() {
+</span>impl TcpListener {
+    /// [*] --&gt; `TcpListener`: 创建欢迎套接字
+    fn bind(addr: impl ToSocketAddrs) -&gt; Result&lt;TcpListner&gt; { ... }
+    
+    /// `TcpListener` --&gt; `TcpListener`: `accept`自己状态不改变
+    /// `TcpListener` --&gt; `TcpStream`: `accept`创建一个新的`TcpStream`
+    fn accept(&amp;self) -&gt; Result&lt;(TcpStream, SocketAddr)&gt; { ... }
+}
+
+/// `TcpListener` --&gt; [*]: 关闭欢迎套接字
+impl Drop for TcpListner { ... }
+
+
+impl TcpStream {
+    /// [*] --&gt; `TcpStream`: 建立连接，创建连接套接字
+    fn connect(addr: impl ToSocketAddrs) -&gt; Result&lt;TcpStream&gt; { ... }
+}
+
+/// `TcpStream` --&gt; [*]: 关闭连接套接字
+impl Drop for TcpStream { ... }
+/// 可以在连接套接字上读数据
+impl Read for TcpStream { ... }
+/// 可以在连接套接字上写数据
+impl Write for TcpStream { ... }
+<span class="boring">}</span></code></pre></pre>
+<p>这里其实就是用<code>TcpListner</code>和<code>TcpStream</code>两种类型表示了两种不同的socket状态，用他们的方法表示表示状态机的边。</p>
+<h4 id="lock即访问控制"><a class="header" href="#lock即访问控制">Lock，即访问控制</a></h4>
+<p>其实我们常用的锁，本身也可以看做一个状态机：</p>
+<ul>
+<li><code>Mutex</code>表示unlocked的状态</li>
+<li><code>MutexGuard</code>表示locked的状态</li>
+</ul>
+<p><a href="https://mermaid.live/edit#pako:eNpNTzsOwjAMvUrkCVC5QAYmJBa6wAZhsBIXIpqkSh0Bqnp30mZoPVh-P8lvAB0MgYSekelo8RnRKS_yGBtJsw1enC-FKfu-e4j9_iDqxPSVwtOn8DNelFPCaKRog36v9Jldx00M3Sb5ybaFChxFh9bkh4YppYBf5EiBzKehBlPLCpQfsxUTh-vPa5AcE1WQOrNUANlg22e2Q38LYcFkLIdYl9Jz9_EPT21VHQ"><img src="https://mermaid.ink/img/pako:eNpNTzsOwjAMvUrkCVC5QAYmJBa6wAZhsBIXIpqkSh0Bqnp30mZoPVh-P8lvAB0MgYSekelo8RnRKS_yGBtJsw1enC-FKfu-e4j9_iDqxPSVwtOn8DNelFPCaKRog36v9Jldx00M3Sb5ybaFChxFh9bkh4YppYBf5EiBzKehBlPLCpQfsxUTh-vPa5AcE1WQOrNUANlg22e2Q38LYcFkLIdYl9Jz9_EPT21VHQ?type=png" alt="" /></a></p>
+<p>对应的rust接口是：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl&lt;T&gt; Mutex&lt;T&gt; {
+    /// 创建一个unlocked的数据
+    fn new(t: T) -&gt; Mutex&lt;T&gt; { ... }
+    
+    /// 将锁的状态转换为locked的状态
+    fn lock&lt;'a&gt;(&amp;'a self) -&gt; MutexGuard&lt;'a, T&gt; { ... }
+}
+
+/// MutexGuard&lt;'_, T&gt;释放后变为了unlocked的状态
+impl&lt;T&gt; Drop for MutexGuard&lt;'_, T&gt; { ... }
+<span class="boring">}</span></code></pre></pre>
+<p>不过跟这节开头讲到的用<code>&amp;mut</code>表示独占的写法有点不同，<code>Mutex::lock</code>接受的是一个<code>&amp;self</code>，但这里也同样做到了独占的效果，大家可以思考一下为什么。</p>
+<h2 id="state-machine-pattern-1"><a class="header" href="#state-machine-pattern-1">State machine Pattern</a></h2>
+<p>上面一节中列了rust一些状态机的存在形式，主要分为enum-based的状态机（即以enum variant作为状态机的状态），和type-based的状态机（即以type为状态机的状态）。但状态机在rust中实在是太常见了，在谷歌上一搜，就能搜到很多相关的文章，大家也都可以去看看：</p>
+<ul>
+<li><a href="https://hoverbear.org/blog/rust-state-machine-pattern/">Pretty State Machine Patterns in Rust</a></li>
+<li><a href="https://refactoring.guru/design-patterns/state/rust/example">State in Rust</a></li>
+<li><a href="https://blog.yoshuawuyts.com/state-machines/">State Machines: Introduction — 2020-03-30</a></li>
+<li><a href="https://blog.yoshuawuyts.com/state-machines-2/">State Machines II: an enum-based design — 2022-08-23</a></li>
+<li><a href="https://blog.yoshuawuyts.com/state-machines-3/">State Machines III: Type States — 2023-01-02</a></li>
+<li><a href="https://without.boats/blog/ringbahn-ii/">Ringbahn II: the central state machine</a></li>
+</ul>
+<p>本来想把能想到的一些状态机的写法总结下来，但是精力有限，这里仅在<strong>异步的语境</strong>下，再展开一下enum-based的state machine。</p>
+<h3 id="规则1基础规则"><a class="header" href="#规则1基础规则">规则1：基础规则</a></h3>
+<p>rust中async的”基础“自然是<code>Future</code>trait，这代表一个“异步的运算”，需要通过调用<code>poll</code>不断地轮询<code>Future</code>，直到返回<code>Ready</code>才能得到计算的值：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub trait Future {
+    type Output;
+
+    fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Self::Output&gt;;
+}
+<span class="boring">}</span></code></pre></pre>
+<p>这也可以视作一个状态机，具有<code>Pending</code>和<code>Ready</code>两种状态（<code>Pending</code>里一般有子状态），<code>poll</code>则作为状态转移的边：</p>
+<p><a href="https://mermaid.live/edit#pako:eNplTzEKwzAM_IrRnHzAQ6eOLZR0K15EpKQGWw6OPISQv9etKR2qQZzuDk63w5iIwcKqqHz2OGeMTkwd8plH9UnMZWhM2zcW8jKbvj99sTVLCuFfHhhpayJ0EDlH9FTD9rfVgT45sgNbIfGEJagDJ0e1YtF032QEq7lwB2Wh33tgJwxrZReUR0q_m8lrytdW6NPreAGuq0mn"><img src="https://mermaid.ink/img/pako:eNplTzEKwzAM_IrRnHzAQ6eOLZR0K15EpKQGWw6OPISQv9etKR2qQZzuDk63w5iIwcKqqHz2OGeMTkwd8plH9UnMZWhM2zcW8jKbvj99sTVLCuFfHhhpayJ0EDlH9FTD9rfVgT45sgNbIfGEJagDJ0e1YtF032QEq7lwB2Wh33tgJwxrZReUR0q_m8lrytdW6NPreAGuq0mn?type=png" alt="" /></a></p>
+<p>对于<code>Future</code>来说，<code>Ready</code>都是状态机的终态，一般不允许再推进其状态。我们可以放松这样的限制，将这两个状态当做两个普通的状态放到一个更大的状态机中。</p>
+<p>比如说现在有一个状态机：</p>
+<ul>
+<li>有两个状态<code>Ping</code>和<code>Pong</code>，两个状态中都会有一个Future需要推进</li>
+<li>状态<code>Ping</code>中的Future就绪后，就会进入状态<code>Pong</code>中</li>
+<li>状态<code>Pong</code>中的Future就绪后，也会进入状态<code>Ping</code>中</li>
+</ul>
+<p>对应的状态图如下：</p>
+<p><a href="https://mermaid.live/edit#pako:eNptkDEKwzAMRa9iNCcX8NCpYwul3YqhiFhJDbZlHHkoIXevmwyhbTSIr_80SH-Cji2BhlFQ6OhwyBhMVLWsy9SJ46hO19VZ-8XFQbXtYRFaJfb-kar8pbxHeYfyP3VfFBoIlAM6Ww-dPrsG5EmBDOgqLfVYvBgwca6rWIRvr9iBllyogZLs9hroHv1Y3YTxzrzNZJ1wPq9hLJnMb2CvXJE"><img src="https://mermaid.ink/img/pako:eNptkDEKwzAMRa9iNCcX8NCpYwul3YqhiFhJDbZlHHkoIXevmwyhbTSIr_80SH-Cji2BhlFQ6OhwyBhMVLWsy9SJ46hO19VZ-8XFQbXtYRFaJfb-kar8pbxHeYfyP3VfFBoIlAM6Ww-dPrsG5EmBDOgqLfVYvBgwca6rWIRvr9iBllyogZLs9hroHv1Y3YTxzrzNZJ1wPq9hLJnMb2CvXJE?type=png" alt="" /></a></p>
+<p>可以写成以下代码：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct PingPong&lt;FutPing, FutPong&gt; {
+    _marker: PhantomPinned,
+    state: PingPongState&lt;FutPing, FutPong&gt;,
+}
+
+enum PingPongState&lt;FutPing, FutPong&gt; {
+    Ping(FutPing),
+    Pong(FutPong)
+}
+
+
+impl&lt;FutPing, FutPong&gt; PingPong&lt;FutPing, FutPong&gt;
+where
+    FutPing: Future,
+    FutPong: Future,
+{
+    /// Ping --&gt; Pong
+    fn poll_ping(
+        self: Pin&lt;&amp;mut Self&gt;, 
+        cx: &amp;mut Context&lt;'_&gt;,
+        /// 构造一个`FutPong`
+        mut pong: impl FnMut(FutPing::Output) -&gt; FutPong
+    ) -&gt; Poll&lt;()&gt; {
+        let this = unsafe { Pin::into_inner_unchecked(self) };
+        
+        loop {
+            match this.state {
+                Ping(fut_ping) =&gt; {
+                    let fut_ping = unsafe { Pin::new_unchecked(fut_ping) };
+                    let output = ready!(fut_ping.poll(cx));
+                    // Ping --&gt; Pong
+                    this.state = Pong(pong(output));
+                    // `poll_ping`这条边结束
+                    return Ready(());
+                }
+                /// 没有从`Pong`出发的`poll_ping`的边
+                /// 所以是`unreachable!()`
+                Pong(_) =&gt; {
+                    unreachable!();
+                }
+            }
+        }
+    }
+    
+    /// Pong --&gt; Ping 与 `Poll_ping`类似
+    fn poll_pong(...) {...}
+    
+    /// 对外提供的，用于推进这个状态机的接口
+    pub fn poll(
+        self: Pin&lt;&amp;mut Self&gt;, 
+        cx: &amp;mut Context&lt;'_&gt;,
+        
+        pong: impl FnMut(FutPing::Output) -&gt; FutPong,
+        ping: impl FnMut(FutPing::Output) -&gt; FutPing,
+    ) -&gt; Poll&lt;()&gt;
+    {
+        let this = unsafe { Pin::into_inner_unchecked(self.as_mut()) };
+        match this {
+            Ping(_) =&gt; self.poll_ping(cx, pong),
+            Pong(_) =&gt; self.poll_pong(cx, ping),
+        }
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>当然，现在我们有<code>async</code>/<code>.await</code>，可以将<code>PingPong</code>大概写成这样：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>async {
+    let mut ping_output = ...;
+    let mut pong_output = ...;
+    loop {
+        ping_output = ping(pong_output).await;
+        pong_output = pong(ping_output).await;
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>到这里，我们可以得到一个初步的状态机映射<strong>规则1</strong>：</p>
+<ul>
+<li>
+<p>用enum variant表示状态机的状态</p>
+</li>
+<li>
+<p>用<code>poll_xxx</code>方法表示这样的边：</p>
+<p><a href="https://mermaid.live/edit#pako:eNplj8EKwjAMhl-l5Ly9QA_CxKNe9CaFEdZMC20zuhQmY-_is_hkVneYYMgh-b8fkn-Gji2BhlFQ6ODwljCo17O0iaqUdYk6cRzV8bzqv7RRdb1TjVYDe99O0_QP9xuECgKlgM6Wg_PHZEDuFMiALqOlHrMXAyYuxYpZ-PKIHWhJmSrIg91eBN2jH4s6YLwybztZJ5xOa6hvtuUNjuZOvA"><img src="https://mermaid.ink/img/pako:eNplj8EKwjAMhl-l5Ly9QA_CxKNe9CaFEdZMC20zuhQmY-_is_hkVneYYMgh-b8fkn-Gji2BhlFQ6ODwljCo17O0iaqUdYk6cRzV8bzqv7RRdb1TjVYDe99O0_QP9xuECgKlgM6Wg_PHZEDuFMiALqOlHrMXAyYuxYpZ-PKIHWhJmSrIg91eBN2jH4s6YLwybztZJ5xOa6hvtuUNjuZOvA?type=png" alt="" /></a></p>
+</li>
+</ul>
+<p>rust基于规则1的抽象有：</p>
+<ul>
+<li><code>Future</code></li>
+<li><code>Stream</code>，异步的迭代</li>
+<li><code>AsyncRead</code>，异步读bytes</li>
+<li><code>AsyncWrite</code>，异步写bytes</li>
+</ul>
+<p>这里给个小小习题，根据规则1写出对应下面状态机的代码：</p>
+<p><a href="https://mermaid.live/edit#pako:eNp1UEsKwjAQvUqYdXuBLIRWl7rRnQQkNFMN5FPSBJqW3sWzeDKjAVsFh-Ex894MzLwJGisQKPSee9xJfnVck8c9JTMkhZAOGy-tIfvjh8xYkbLckIqSzip1GYZhvZfFehH_b8YY1_T2l85Yf4njOEIBGp3mUqTzp9cQA39DjQxoKgW2PCjPgJk5jfLg7SmaBqh3AQsInVgeBtpy1Se24-Zs7dKjkN66Q7bo7dT8BOFoYZk"><img src="https://mermaid.ink/img/pako:eNp1UEsKwjAQvUqYdXuBLIRWl7rRnQQkNFMN5FPSBJqW3sWzeDKjAVsFh-Ex894MzLwJGisQKPSee9xJfnVck8c9JTMkhZAOGy-tIfvjh8xYkbLckIqSzip1GYZhvZfFehH_b8YY1_T2l85Yf4njOEIBGp3mUqTzp9cQA39DjQxoKgW2PCjPgJk5jfLg7SmaBqh3AQsInVgeBtpy1Se24-Zs7dKjkN66Q7bo7dT8BOFoYZk?type=png" alt="" /></a></p>
+<h3 id="规则2立刻转移"><a class="header" href="#规则2立刻转移">规则2：立刻转移</a></h3>
+<p>接下来在规则1中添加一个更简单的规则。</p>
+<p><code>poll_xxx</code>的边一般只用来描述那些不会立刻发生改变的状态，即异步地改变状态，但有些状态的转移却是可以立刻发生的，比如重置计时器。</p>
+<p>一般的计时器都会提供一个<code>reset</code>的方法，用来重置计时，这个操作是能立刻完成的，大概的状态机可以描述如下：</p>
+<p><a href="https://mermaid.live/edit#pako:eNp1kDEOwzAIRa9iMScX8NApY7u0nSovKCapJdtEDh6iKHevW1fNkjIgPjwQsELPlkDDLCjUORwTBhNVMesS9eI4qvO1ZqrvyOPi4qja9vQTWk3s_QFwd4E4y9_6PiDRTFKJb9MRAA0ESgGdLUuvb9yAPCmQAV1CSwNmLwZM3AqKWfi2xB60pEwN5MnuZ4Ie0M8lO2F8MO-arBNOl_qYz3-2F4kaYX0"><img src="https://mermaid.ink/img/pako:eNp1kDEOwzAIRa9iMScX8NApY7u0nSovKCapJdtEDh6iKHevW1fNkjIgPjwQsELPlkDDLCjUORwTBhNVMesS9eI4qvO1ZqrvyOPi4qja9vQTWk3s_QFwd4E4y9_6PiDRTFKJb9MRAA0ESgGdLUuvb9yAPCmQAV1CSwNmLwZM3AqKWfi2xB60pEwN5MnuZ4Ie0M8lO2F8MO-arBNOl_qYz3-2F4kaYX0?type=png" alt="" /></a></p>
+<p>​</p>
+<p>函数签名一般会写成这样：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Delay {
+    pub fn reset(self: Pin&lt;&amp;mut Self&gt;, dur: Duration);
+}
+<span class="boring">}</span></code></pre></pre>
+<p>我们将这种能立刻完成的状态转移，添加到规则中去，得到<strong>规则2：</strong></p>
+<ul>
+<li>
+<p>enum variant映射为状态机的状态</p>
+</li>
+<li>
+<p><code>fn poll_xxx(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;, arg: Arg) -&gt; Poll&lt;Res&gt;</code>方法映射为这样的边，用来处理一些异步的操作：</p>
+<p><a href="https://mermaid.live/edit#pako:eNplj8EKwjAMhl-l5Ly9QA_CxKNe9CaFEdZMC20zuhQmY-_is_hkVneYYMgh-b8fkn-Gji2BhlFQ6ODwljCo17O0iaqUdYk6cRzV8bzqv7RRdb1TjVYDe99O0_QP9xuECgKlgM6Wg_PHZEDuFMiALqOlHrMXAyYuxYpZ-PKIHWhJmSrIg91eBN2jH4s6YLwybztZJ5xOa6hvtuUNjuZOvA"><img src="https://mermaid.ink/img/pako:eNplj8EKwjAMhl-l5Ly9QA_CxKNe9CaFEdZMC20zuhQmY-_is_hkVneYYMgh-b8fkn-Gji2BhlFQ6ODwljCo17O0iaqUdYk6cRzV8bzqv7RRdb1TjVYDe99O0_QP9xuECgKlgM6Wg_PHZEDuFMiALqOlHrMXAyYuxYpZ-PKIHWhJmSrIg91eBN2jH4s6YLwybztZJ5xOa6hvtuUNjuZOvA?type=png" alt="" /></a></p>
+</li>
+<li>
+<p><code>fn set(self: Pin&lt;&amp;mut Self&gt;, arg: Arg)</code>映射成这样的边，则表示一些立刻发生的操作（读或写）：</p>
+<p><a href="https://mermaid.live/edit#pako:eNpNjjEOwjAMRa8SeW4vkAEJxAgLbCiLFbsQqUmqxBlQ1btwFk6GoUOxPNj_f329GXwmBgtVUPgY8F4wmvdL1yWjQ6Gwl5CTOV1W_d_dm77fmYM1lQU6iFwiBtK6-es7kAdHdmD1JB6wjeLApUWj2CRfn8mDldK4gzbRBgB2wLGqOmG65bz9TEFyOa_IP_LlA72LQwo"><img src="https://mermaid.ink/img/pako:eNpNjjEOwjAMRa8SeW4vkAEJxAgLbCiLFbsQqUmqxBlQ1btwFk6GoUOxPNj_f329GXwmBgtVUPgY8F4wmvdL1yWjQ6Gwl5CTOV1W_d_dm77fmYM1lQU6iFwiBtK6-es7kAdHdmD1JB6wjeLApUWj2CRfn8mDldK4gzbRBgB2wLGqOmG65bz9TEFyOa_IP_LlA72LQwo?type=png" alt="" /></a></p>
+</li>
+</ul>
+<h3 id="规则3取消"><a class="header" href="#规则3取消">规则3：取消</a></h3>
+<p>在规则1中，我撒了个小谎，说<code>Future</code>只有两种状态，但是事实上<code>Future</code>至少有三种状态——取消状态（或者叫终止）：</p>
+<p><a href="https://mermaid.live/edit#pako:eNplULsKwzAM_BWjsSQ_4KFTxxZKurXuICIlNfgRHHsIIf9eN6akJRrE6e4E0s3QemKQMEaMfNLYB7TKiVykA7dReyfOTWFKv7Ij7XpR18cvlmLwxuzlhpGmX3FveRyeUlDwQ5HWjX8BKrAcLGrKZ84fm4L4YssKZIbEHSYTFSi3ZCum6G-Ta0HGkLiCNND2GMgOzZjZAd3d-21m0tGHS4liTWR5A4poWdE"><img src="https://mermaid.ink/img/pako:eNplULsKwzAM_BWjsSQ_4KFTxxZKurXuICIlNfgRHHsIIf9eN6akJRrE6e4E0s3QemKQMEaMfNLYB7TKiVykA7dReyfOTWFKv7Ij7XpR18cvlmLwxuzlhpGmX3FveRyeUlDwQ5HWjX8BKrAcLGrKZ84fm4L4YssKZIbEHSYTFSi3ZCum6G-Ta0HGkLiCNND2GMgOzZjZAd3d-21m0tGHS4liTWR5A4poWdE?type=png" alt="" /></a></p>
+<p>因为在Rust中所有的类型都是可以<strong>随时随地</strong> <strong>安全地</strong>析构的，这是一条“公理”，通常可以表示为：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn drop&lt;T&gt;(_: T) {}
+<span class="boring">}</span></code></pre></pre>
+<p>对于<code>Future</code>这个抽象来说，则利用了Rust这个特性来表示取消一个异步运算——在不再关心异步计算的结果时，我们可以直接析构对应的<code>Future</code>，由析构函数自动回收相关资源。</p>
+<p>而对于状态机来说，每个状态都需要考虑析构此时，思考对应状态是否允许析构；状态机结构上，至少都会有一个终态，且其它所有状态都会有一条到这个终态的边；我们也对这个终态其赋予“取消“的含义。</p>
+<p>结合上面所说的几点，我们修订一下规则2，得到<strong>规则3</strong>：</p>
+<ul>
+<li>
+<p>enum variant映射为状态机的状态</p>
+</li>
+<li>
+<p><code>fn poll_xxx(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;, arg: Arg) -&gt; Poll&lt;Res&gt;</code>方法映射为这样的边，用来处理一些异步的操作：</p>
+<p><a href="https://mermaid.live/edit#pako:eNplj8EKwjAMhl-l5Ly9QA_CxKNe9CaFEdZMC20zuhQmY-_is_hkVneYYMgh-b8fkn-Gji2BhlFQ6ODwljCo17O0iaqUdYk6cRzV8bzqv7RRdb1TjVYDe99O0_QP9xuECgKlgM6Wg_PHZEDuFMiALqOlHrMXAyYuxYpZ-PKIHWhJmSrIg91eBN2jH4s6YLwybztZJ5xOa6hvtuUNjuZOvA"><img src="https://mermaid.ink/img/pako:eNplj8EKwjAMhl-l5Ly9QA_CxKNe9CaFEdZMC20zuhQmY-_is_hkVneYYMgh-b8fkn-Gji2BhlFQ6ODwljCo17O0iaqUdYk6cRzV8bzqv7RRdb1TjVYDe99O0_QP9xuECgKlgM6Wg_PHZEDuFMiALqOlHrMXAyYuxYpZ-PKIHWhJmSrIg91eBN2jH4s6YLwybztZJ5xOa6hvtuUNjuZOvA?type=png" alt="" /></a></p>
+</li>
+<li>
+<p><code>fn set(self: Pin&lt;&amp;mut Self&gt;, arg: Arg)</code>方法映射成这样的边，则表示一些立刻发生的操作（读或写）：</p>
+<p><a href="https://mermaid.live/edit#pako:eNpNjjEOwjAMRa8SeW4vkAEJxAgLbCiLFbsQqUmqxBlQ1btwFk6GoUOxPNj_f329GXwmBgtVUPgY8F4wmvdL1yWjQ6Gwl5CTOV1W_d_dm77fmYM1lQU6iFwiBtK6-es7kAdHdmD1JB6wjeLApUWj2CRfn8mDldK4gzbRBgB2wLGqOmG65bz9TEFyOa_IP_LlA72LQwo"><img src="https://mermaid.ink/img/pako:eNpNjjEOwjAMRa8SeW4vkAEJxAgLbCiLFbsQqUmqxBlQ1btwFk6GoUOxPNj_f329GXwmBgtVUPgY8F4wmvdL1yWjQ6Gwl5CTOV1W_d_dm77fmYM1lQU6iFwiBtK6-es7kAdHdmD1JB6wjeLApUWj2CRfn8mDldK4gzbRBgB2wLGqOmG65bz9TEFyOa_IP_LlA72LQwo?type=png" alt="" /></a></p>
+</li>
+<li>
+<p>状态机有终态，将析构函数映射为 状态机所有状态到终态的边，表示“取消”推进这个状态机：</p>
+<p><a href="https://mermaid.live/edit#pako:eNpNjz0OwjAMha8SeUTtBTIgITHCAhuEwapdiNTEVeoMVdW7cBZORgCJ1nqDfz49-U3QCDFYGBSV9x7vCYN5Pf9y0ZQin7hRL9EcTuvrmtmZut6a6-ZmDSXpoYLAKaCn4j59EAf64MAObGmJW8ydOnBxLihmlfMYG7CaMleQe1r-AdtiN5Rtj_EissxMXiUdfwm-QeY3HJpKGw"><img src="https://mermaid.ink/img/pako:eNpNjz0OwjAMha8SeUTtBTIgITHCAhuEwapdiNTEVeoMVdW7cBZORgCJ1nqDfz49-U3QCDFYGBSV9x7vCYN5Pf9y0ZQin7hRL9EcTuvrmtmZut6a6-ZmDSXpoYLAKaCn4j59EAf64MAObGmJW8ydOnBxLihmlfMYG7CaMleQe1r-AdtiN5Rtj_EissxMXiUdfwm-QeY3HJpKGw?type=png" alt="" /></a></p>
+</li>
+</ul>
+<p>在rust不支持linear type之前（niko称之为must move type，用且必须只能用一次的的类型，这样的类型不允许自动析构），其实都需要考虑取消这件事。</p>
+<p>考虑一个场景，假设一个状态机有一段缓冲区，因为因为是异步操作，把这个缓冲区的引用丢给了其它线程去读写，这时候状态机被取消了，缓冲区被释放，那么其他线程就得到了一个悬垂引用，产生UB。这就是一个典型的cancel safe问题，没有考虑对应状态下可能被析构的可能性。</p>
+<h3 id="规则4并发"><a class="header" href="#规则4并发">规则4：并发</a></h3>
+<p>到规则3为止，我们还只能在单一状态机上做状态转移，不太好去描述一些并发的场景。就比如说前面说描述的TCP套接字：</p>
+<ul>
+<li>欢迎套接字在监听到新连接后，会创建一个 连接套接字</li>
+<li>欢迎套接字和连接套接字相互独立，因此能分别接收和发送数据</li>
+</ul>
+<p>对应的接口是这样：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl TcpListener {
+    /// `TcpListener` --&gt; `TcpListener`: `accept`自己状态不改变
+    /// `TcpListener` --&gt; `TcpStream`: `accept`创建一个新的`TcpStream`
+    fn accept(&amp;self) -&gt; Result&lt;(TcpStream, SocketAddr)&gt; { ... }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>因为<code>TcpListener</code>和<code>TcpStream</code>是两个独立的socket，于是就可以在不同的线程下，并发地去收发数据。那么我们的状态机模式，也可以参考这个接口添加新规则，需要并发的时候，提供方法返回一个独立的状态机：</p>
+<p><strong>规则4：</strong></p>
+<ul>
+<li>
+<p>enum variant映射为状态机的状态</p>
+</li>
+<li>
+<p><code>fn poll_xxx(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;, arg: Arg) -&gt; Poll&lt;Res&gt;</code>方法映射为这样的边，用来处理一些异步的操作：</p>
+<p><a href="https://mermaid.live/edit#pako:eNplj8EKwjAMhl-l5Ly9QA_CxKNe9CaFEdZMC20zuhQmY-_is_hkVneYYMgh-b8fkn-Gji2BhlFQ6ODwljCo17O0iaqUdYk6cRzV8bzqv7RRdb1TjVYDe99O0_QP9xuECgKlgM6Wg_PHZEDuFMiALqOlHrMXAyYuxYpZ-PKIHWhJmSrIg91eBN2jH4s6YLwybztZJ5xOa6hvtuUNjuZOvA"><img src="https://mermaid.ink/img/pako:eNplj8EKwjAMhl-l5Ly9QA_CxKNe9CaFEdZMC20zuhQmY-_is_hkVneYYMgh-b8fkn-Gji2BhlFQ6ODwljCo17O0iaqUdYk6cRzV8bzqv7RRdb1TjVYDe99O0_QP9xuECgKlgM6Wg_PHZEDuFMiALqOlHrMXAyYuxYpZ-PKIHWhJmSrIg91eBN2jH4s6YLwybztZJ5xOa6hvtuUNjuZOvA?type=png" alt="" /></a></p>
+</li>
+<li>
+<p><code>fn set(self: Pin&lt;&amp;mut Self&gt;, arg: Arg)</code>方法映射成这样的边，则表示一些立刻发生的操作（读或写）：</p>
+<p><a href="https://mermaid.live/edit#pako:eNpNjjEOwjAMRa8SeW4vkAEJxAgLbCiLFbsQqUmqxBlQ1btwFk6GoUOxPNj_f329GXwmBgtVUPgY8F4wmvdL1yWjQ6Gwl5CTOV1W_d_dm77fmYM1lQU6iFwiBtK6-es7kAdHdmD1JB6wjeLApUWj2CRfn8mDldK4gzbRBgB2wLGqOmG65bz9TEFyOa_IP_LlA72LQwo"><img src="https://mermaid.ink/img/pako:eNpNjjEOwjAMRa8SeW4vkAEJxAgLbCiLFbsQqUmqxBlQ1btwFk6GoUOxPNj_f329GXwmBgtVUPgY8F4wmvdL1yWjQ6Gwl5CTOV1W_d_dm77fmYM1lQU6iFwiBtK6-es7kAdHdmD1JB6wjeLApUWj2CRfn8mDldK4gzbRBgB2wLGqOmG65bz9TEFyOa_IP_LlA72LQwo?type=png" alt="" /></a></p>
+</li>
+<li>
+<p>状态机有终态，将析构函数映射为 状态机所有状态到终态的边，表示“取消”推进这个状态机：</p>
+<p><a href="https://mermaid.live/edit#pako:eNpNjz0OwjAMha8SeUTtBTIgITHCAhuEwapdiNTEVeoMVdW7cBZORgCJ1nqDfz49-U3QCDFYGBSV9x7vCYN5Pf9y0ZQin7hRL9EcTuvrmtmZut6a6-ZmDSXpoYLAKaCn4j59EAf64MAObGmJW8ydOnBxLihmlfMYG7CaMleQe1r-AdtiN5Rtj_EissxMXiUdfwm-QeY3HJpKGw"><img src="https://mermaid.ink/img/pako:eNpNjz0OwjAMha8SeUTtBTIgITHCAhuEwapdiNTEVeoMVdW7cBZORgCJ1nqDfz49-U3QCDFYGBSV9x7vCYN5Pf9y0ZQin7hRL9EcTuvrmtmZut6a6-ZmDSXpoYLAKaCn4j59EAf64MAObGmJW8ydOnBxLihmlfMYG7CaMleQe1r-AdtiN5Rtj_EissxMXiUdfwm-QeY3HJpKGw?type=png" alt="" /></a></p>
+</li>
+<li>
+<p><code>fn spawn(self: Pin&lt;&amp;mut Self&gt;, arg: Arg) -&gt; NewStateMachine</code> 方法返回一个新的与<code>Self</code>独立的状态机，两个状态机可以并发地推进：</p>
+<p><a href="https://mermaid.live/edit#pako:eNpdUbFOwzAQ_RXrJkDtD2RASsVIGegGZrDsC7WU2JHjqEJVJJiKGBhZYEcCBiQkhkT8DU3zGTg2UqLecD6_e3fPvlsD1wIhgsIyiyeSXRuWUUWcCWmQW6kVOT0PSPCeSc5wteiDOeNLqZCsQ7K3y6MrMp0e92cAq3F58LFn7DWJSJGzlTrgBh14OGbO_nPjHkq7d6SYWKITEg_6nki298_bpm6fPncP3-3tXftS78sNFd3mravfA_G3eYy7n4_da9NtvmaBg0p4NZhAhiZjUriJ-R9TsEvMkELkQoEJK1NLgarKUVlp9eJGcYisKXECZS6GGUOUsLRwaM7UhdbDHYW02szDVvxyqj8ndJLO"><img src="https://mermaid.ink/img/pako:eNpdUbFOwzAQ_RXrJkDtD2RASsVIGegGZrDsC7WU2JHjqEJVJJiKGBhZYEcCBiQkhkT8DU3zGTg2UqLecD6_e3fPvlsD1wIhgsIyiyeSXRuWUUWcCWmQW6kVOT0PSPCeSc5wteiDOeNLqZCsQ7K3y6MrMp0e92cAq3F58LFn7DWJSJGzlTrgBh14OGbO_nPjHkq7d6SYWKITEg_6nki298_bpm6fPncP3-3tXftS78sNFd3mravfA_G3eYy7n4_da9NtvmaBg0p4NZhAhiZjUriJ-R9TsEvMkELkQoEJK1NLgarKUVlp9eJGcYisKXECZS6GGUOUsLRwaM7UhdbDHYW02szDVvxyqj8ndJLO?type=png" alt="" /></a></p>
+</li>
+</ul>
+<p><code>tower::Service</code>就是一个典型的基于规则4的抽象：</p>
+<ul>
+<li>把<code>Service</code>试作状态机，除了终态以外，至少有两个状态，<code>NotReady</code>和<code>Ready</code>，</li>
+<li>通过<code>poll_ready</code>将<code>NotReady</code>推进到<code>Ready</code>，才能调用<code>call</code>返回一个新的状态机<code>Future</code>，然后状态又回到<code>NotReady</code></li>
+<li>这时<code>Service</code>可以运行，同时也可以通过推进<code>Future</code>并发地处理上个请求</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub trait Service&lt;Request&gt; {
+    type Response;
+    type Error;
+    type Future: Future
+    where
+        &lt;Self::Future as Future&gt;::Output == Result&lt;Self::Response, Self::Error&gt;;
+
+    fn poll_ready(
+        &amp;mut self, 
+        cx: &amp;mut Context&lt;'_&gt;
+    ) -&gt; Poll&lt;Result&lt;(), Self::Error&gt;&gt;;
+    
+    /// 返回一个独立的新的Future，可以并发地处理请求
+    fn call(&amp;mut self, req: Request) -&gt; Self::Future;
+}
+<span class="boring">}</span></code></pre></pre>
+<p>可以将其表示为以下的状态机：</p>
+<p><a href="https://mermaid.live/edit#pako:eNp1kbFOwzAQhl_F8gSofQEPTIgJGMoGQciKr60lx47c81BVkWAqYmBkgR0JGJCQGBLxNjTNY-DYgCsEHs535-_ut30LmhsBlNEZcoQ9ySeWF5kmfglpIUdpNDkYxUy0RwZHwMWcDIe7PwEjpVHq3Pb-H9g_TLQJ23foLDCSc6W2cg8ibP9mkmJPbfYJT_jqQRYx16_TnbNQ6feYrDartPFFVk6mSMw46qTSXoKsru5WTd3evqyv39qLy_a-jhoJ65aPXf0Ujz-am9Cke39ePzTd8vX7whEHLYIkHdACbMGl8J8fLptRnEIBGWXeFTDmTmFGM115lDs0x3OdU4bWwYC6UqRxUTbmauazJdcnxqQYhERjD-OAw5yrT3v-rJg"><img src="https://mermaid.ink/img/pako:eNp1kbFOwzAQhl_F8gSofQEPTIgJGMoGQciKr60lx47c81BVkWAqYmBkgR0JGJCQGBLxNjTNY-DYgCsEHs535-_ut30LmhsBlNEZcoQ9ySeWF5kmfglpIUdpNDkYxUy0RwZHwMWcDIe7PwEjpVHq3Pb-H9g_TLQJ23foLDCSc6W2cg8ibP9mkmJPbfYJT_jqQRYx16_TnbNQ6feYrDartPFFVk6mSMw46qTSXoKsru5WTd3evqyv39qLy_a-jhoJ65aPXf0Ujz-am9Cke39ePzTd8vX7whEHLYIkHdACbMGl8J8fLptRnEIBGWXeFTDmTmFGM115lDs0x3OdU4bWwYC6UqRxUTbmauazJdcnxqQYhERjD-OAw5yrT3v-rJg?type=png" alt="" /></a></p>
+<h3 id="小结"><a class="header" href="#小结">小结：</a></h3>
+<p>上面总结的一些<strong>异步语境下的状态机模式</strong>完全可以根据实际需求继续添加新的规则，这里就不展开了。但就目前为止我觉得已经是将平时开发的常见要素给囊括了，而且也介绍了基于这些模式的相关抽象，大家可以尝试使用这些抽象来设计自己的代码。</p>
+<h2 id="总结"><a class="header" href="#总结">总结</a></h2>
+<p>前面的内容是从<strong>用状态机表示控制流</strong>的角度切入，来介绍rust中的状态机，以及展开了下我心目中的状态机模式。而且，我确信状态机就是解决开篇提到的问题的钥匙——将状态机视为一种具象化的、first class的控制流，利用trait等机制对其施以约束，我们就可以将程序中的大大小小控制流给管理起来。</p>
+<p>而且，状态机还有其独特的优势：每个状态转移的前置条件，后置条件都可以清晰地定义出来，这样会更加方便地进行测试与验证。（当然这是在状态比较少的情况）</p>
+<p>BTW，有些场景，其实并不适合状态机的发挥：</p>
+<ol>
+<li>太简单的场景，不需要状态机。这时候我们更倾向于与直接用语句这种更<strong>线性</strong>的表达。</li>
+<li>太复杂的场景，很难使用状态机。在同一个抽象层面上如果存在太多状态和条件，是一件十分难以设计和维护的事情。但这可能并不是状态机自身的问题，而是代码的设计出了问题，没有<strong>控制</strong>好复杂度（注意这里表达，没有说降低复杂度）</li>
+<li>变动的比较多的场景，很难使用状态机。改动总是会引起条件变动，从而破坏状态机的一些假设，我们可能需要重新调整状态机的结构，这是一个成本比较大的工作。</li>
+</ol>
+<p>最后，我们使用rust几个原则来简单评判一下状态机模式吧：</p>
+<ul>
+<li>可靠：是的，因为状态机能比较好的验证代码逻辑的正确性</li>
+<li>高性能：不确定，需要看场景。</li>
+<li>支持：是的，rust的机制能帮助我们去写出一个好的状态机</li>
+<li>高产效：可能不，因为状态机的设计成本比较高，而且因为状态机形状各异不一定能到处兼容。</li>
+<li>透明：不涉及。</li>
+<li>通用：可能不，比如上面所说的几个场景可能不适合使用状态机模式。</li>
+</ul>
+<hr />
+<p>一个程序是一个精密的机器，</p>
+<ul>
+<li>状态机就像里面的齿轮，</li>
+<li>程序的event loop就像机器的链条，</li>
+<li>数据则是纸带</li>
+</ul>
+<p>我们通过拉动链条驱动机器的内部的齿轮，对纸带上面的数据进行读写。。。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="todo.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="Rust设计模式探索_crate间接口相互调用.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="todo.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="Rust设计模式探索_crate间接口相互调用.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

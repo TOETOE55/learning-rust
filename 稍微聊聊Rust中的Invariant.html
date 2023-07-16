@@ -1,0 +1,355 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>稍微聊聊Rust中的Invariant —— 那些必须保持的性质 - Rust写作计划</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="theme/learningrust.css">
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="简介.html">简介</a></li><li class="chapter-item expanded "><a href="Rust整体介绍.html"><strong aria-hidden="true">1.</strong> Rust整体介绍</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="来谈谈Rust的大目标和原则.html"><strong aria-hidden="true">1.1.</strong> 来谈谈Rust的大目标和原则</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">1.2.</strong> Rust项目，团队，工作组，社区，基金会，以及如何贡献代码</a></li></ol></li><li class="chapter-item expanded "><a href="Rust基础概念.html"><strong aria-hidden="true">2.</strong> Rust基础概念</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="当我们在rust中讨论“所有权”的时候，究竟是在说什么.html"><strong aria-hidden="true">2.1.</strong> 当我们在Rust中讨论“所有权”的时候，究竟是在说什么</a></li><li class="chapter-item expanded "><a href="当我们在rust中讨论unsafe的时候，究竟是在说什么.html"><strong aria-hidden="true">2.2.</strong> 当我们在Rust中讨论unsafe的时候，究竟是在说什么</a></li><li class="chapter-item expanded "><a href="稍微聊聊Rust中的Invariant.html" class="active"><strong aria-hidden="true">2.3.</strong> 稍微聊聊Rust中的Invariant —— 那些必须保持的性质</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.4.</strong> Rust程序的组成</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.5.</strong> Rust的类型系统(type/trait/borrow checker等)</a></li><li class="chapter-item expanded "><a href="rust中的implItem.html"><strong aria-hidden="true">2.6.</strong> Rust中的impl item</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.7.</strong> 宏</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.8.</strong> 库/链接</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.9.</strong> 工具链相关</a></li></ol></li><li class="chapter-item expanded "><a href="一些语言和库的细节.html"><strong aria-hidden="true">3.</strong> 一些语言和库的细节</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="讲讲让我熬了几天夜的DropCheck.html"><strong aria-hidden="true">3.1.</strong> 讲讲让我熬了几天夜的Drop Check</a></li><li class="chapter-item expanded "><a href="RustPinApi真难啊.html"><strong aria-hidden="true">3.2.</strong> Rust Pin api真难啊</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">3.3.</strong> 多线程</a></li></ol></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">4.</strong> 设计模式以及编码技巧</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="StateMachinePattern.html"><strong aria-hidden="true">4.1.</strong> State machine Pattern</a></li><li class="chapter-item expanded "><a href="Rust设计模式探索_crate间接口相互调用.html"><strong aria-hidden="true">4.2.</strong> crate间接口相互调用</a></li></ol></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">5.</strong> 优秀开源项目架构介绍</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">5.1.</strong> rust analyzer</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">5.2.</strong> rustc</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">5.3.</strong> servo</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust写作计划</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="稍微聊聊rust中的invariant--那些必须保持的性质"><a class="header" href="#稍微聊聊rust中的invariant--那些必须保持的性质">稍微聊聊Rust中的Invariant —— 那些必须保持的性质</a></h1>
+<p>每次我们聊到unsafe的时候，我们其实总离不了Invariant一词。Invariant直接翻译过来称为“不变式”，在Rust的语境下，一般指那些需要保持的性质。比如说</p>
+<ul>
+<li>给定一个<code>x: bool</code>，这就有一个invariant：<code>x</code>只会是<code>true</code>或者<code>false</code>；</li>
+<li>给定一个<code>p: Pin&lt;Box&lt;T&gt;&gt;</code>，这里其中一个invariant：<code>p</code>所指向的内存不会移动；</li>
+<li><code>unsafe fn read&lt;T&gt;(src: *const T) -&gt; T</code>，这里其中一个invariant：<code>src</code>指向一个已经完全初始化的值。</li>
+</ul>
+<p>Rust中有各种各样的invariant，大部分由类型检查来保证，而有些需要人为验证来保证。</p>
+<h1 id="invariant的分类"><a class="header" href="#invariant的分类">Invariant的分类</a></h1>
+<p>我们可以大致将Rust中的invariant分为两类，一类是语言层面的invariant，一类是库层面的invariant。</p>
+<p><strong>语言层面的invariant又叫validity</strong>。语言层面的invariant对于编译器来说，编译器用这些invariant生成正确的代码，也会用这些invariant来进行优化。利用invariant进行优化的一个很典型的例子就是niche optimization，比如将<code>Option&lt;&amp;T&gt;</code>的大小优化为一个指针大小，其利用的一个invariant是<code>&amp;T</code>非空，这时就可以利用空的情况去表示<code>None</code>，进而压缩了类型的大小。值得注意的是这里还可以做其他优化，在<code>T</code>不包含<code>UnsafeCell</code>的情况下，<code>&amp;T</code>有一个invariant是其指向的值是不可变的，所以我们还可以告诉LLVM，<code>&amp;T</code>这个指针是readonly的，然后LLVM就可以根据这个信息去进行优化。</p>
+<p>而一旦违反语言层面的invariant，后果将是<strong>致命</strong>的，这便是所谓的UB(Undefined Behavior)。编译器不再保证程序的任何行为（产物甚至还不保证是可执行文件）。比如上文中提到的invariant，当我们硬是把除了<code>true</code>和<code>false</code>的值，比如<code>2</code>强转为了<code>bool</code>，会导致未定义行为；当我们<code>read</code>一个未初始化的值时，也是一个未定义行为。<a href="https://doc.rust-lang.org/stable/reference/behavior-considered-undefined.html#behavior-considered-undefined">这里</a> 是一些已经明确了的UB，违反语言的invariant，就会导致这些UB（但不仅限于这个列表）。这种invariant是<strong>必须</strong>要遵守的</p>
+<p>不过编译器也可能因为失误，违反了这些invariant，导致依赖该invariant的业务逻辑失效，这属于是编译器的bug。</p>
+<p><strong>库/接口层面的invariant又称为safety</strong>。这一般由库的作者所给定。比如指定一个invariant，<code>struct Even(u64)</code>的值必须是偶数，那么使用<code>Even</code>这个类型的地方就可以直接引入这个性质去做业务逻辑。</p>
+<p>对于<code>Even</code>的作者，它可以提供这样的接口（假设这个库仅仅提供这几个接口）：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Even {
+    /// 当n为偶数时返回Some
+    /// 当n不是偶数时返回None
+    pub fn new(n: u64) -&gt; Option&lt;Self&gt; {
+        if n % 2 == 0 {
+            Some(Self(n))
+        } else {
+            None
+        }
+    }
+    
+    /// n必须是偶数
+    pub fn unchecked_new(n: u64) -&gt; Self {
+        Self(n)
+    }
+    
+    /// 返回值为偶数
+    pub fn as_u64(&amp;self) -&gt; &amp;u64 {
+        &amp;self.0
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>对于接口<code>Even::new</code>，invariant由<code>Even</code>的作者保证；对于<code>Even::unchecked_new</code>，invariant由调用者保证。与语言层面的invariant相比，这个invariant就“温和”许多——破坏了这个invariant，并不会<em>在这个库中</em>造成UB（但同样也会造成程序出现预期以外的行为）。</p>
+<p><code>Pin</code>的invariant也是一个十分典型的库层面的invariant。一般来说这个“不可移动”的invariant由<code>Pin&lt;P&gt;</code>的作者来保证，比如<code>Pin&lt;Box&lt;T&gt;&gt;</code>提供的所有接口都无法移动其指向的值，而使用者无需担心自己的什么错误使用操作破坏了这一invariant（前提是在safe rust下，由类型系统来保证）。而当我们破坏了<code>Pin</code>的invariant后，也可能不会立刻UB，而是在后续的使用中产生UB（比如自引用结构移动后，仍访问其引用所指向的内存）。</p>
+<p>Rust中绝大部分的invariant都是库层面的invariant，比如“str一定是utf-8的编码”，“Send和Sync”，以及后续引入的一些IO-safety等等，都可以划入这类invariant中。</p>
+<h1 id="有类型证明的invariant"><a class="header" href="#有类型证明的invariant">有类型证明的Invariant</a></h1>
+<p>人总会是要犯错的，我们不能靠人来确保这些invariant不会被破坏，那我们是否有自动化检查invariant是否被破坏的方案呢？有，Rust提供了表达力比较强大的类型系统，靠其类型规则就可以各种各样的invariant。</p>
+<p>比如根据类型系统的借用规则，引用的借用范围一定在原值的作用域内，可以保证<code>&amp;T</code>一定是有效的：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let p: &amp;String;
+{
+    let s = String::from(&quot;123&quot;);
+    p = &amp;s;
+}
+// 编译错误，因为`p`借用的范围超出了`s`作用域范围
+println!(&quot;{p:?}&quot;);
+<span class="boring">}</span></code></pre></pre>
+<p>每次编译的时候，都会进行类型检查，当代码不满足类型规则时，编译器就将其视为不合法的程序，不允许其编译。通过类型规则来保证程序各种各样的程序中invariant。我们将有类型系统证明的那一部分rust称之为safe rust。</p>
+<p>Rust有个很重要的原则，**在safe rust下，一个库所有公开的接口中的invariant不会被破坏。**这就是所谓的soundness。比如说刚刚<code>Even</code>其实并不sound，因为提供了<code>Even::unchecked_new</code>这个接口，可以在type check的情况下破坏掉Even的invariant。而如果不提供这个接口，这个库就sound了，因为在类型系统的加持下，你无法构造出一个非偶数的<code>Even</code>，从而保持了invariant。</p>
+<p>当然，有些库则是“几乎”严格地遵守了这个原则，比如说标准库。我们在只使用std的情况下，我们可以更近一步说，<strong>在safe rust下，不会出现UB</strong>。有类型系统的语言很多，但并不是所有的语言都有这么强的保障，比如说cpp，稍不注意，写个死循环就UB了。</p>
+<p><img src=".%5Cimages%5Ccpp_loop_ub.jpg" alt="cpp loop ub" /></p>
+<p>另外Invariant不仅仅要由程序员来保证，而是所有的参与方都要努力保证的一个事实，谁违反了就是谁的bug。这个锅谁来背很重要。Rust的模块系统（指的是crate），也在这方面也起到了至关重要的作用，<strong>使得我们无法从外部破坏在库内部所保证的invariant</strong>。</p>
+<p>这条规则就是所谓的coherence rules，这条规则<strong>不允许为第三方的类型实现第三方的trait</strong>。举个例子，一个库实现了一个指针<code>Ptr&lt;T&gt;</code>，大概只提供这些方法：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Deref for Ptr&lt;T&gt; {
+    type Target = T;
+    // ...
+}
+
+impl&lt;T&gt; Ptr&lt;T&gt; {
+    // 因为没有实现`DerefMut`，所以`Pin&lt;Ptr&lt;T&gt;&gt;`没有任何方法可以移动`T`
+    pub fn pin(t: T) -&gt; Pin&lt;Ptr&lt;T&gt;&gt; { ... }
+    
+    pub fn new(t: T) -&gt; Ptr&lt;T&gt; { ... }
+    
+    // 被`Pin`前可以访问`&amp;mut T`
+    pub fn borrow_mut(&amp;mut self) -&gt; &amp;mut T { ... }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>如果没有coherence rules的话，我们可以为<code>Ptr</code>实现<code>DerefMut</code>，从而破坏<code>Pin</code>的invariant（这个invariant原本在库里已经是被保证了的）：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl DerefMut for Ptr&lt;Unmovale&gt; {
+    fn deref_mut(&amp;mut self) -&gt; &amp;mut Unmovable {
+        let mut tmp = Box::new(Unmovale);
+        // 将Unmovable移动了出来
+        swap(self.borrow_mut(), &amp;mut tmp);
+        Box::leak(tmp)
+    }
+}
+
+let unmovable = Unmovable::new();
+let mut ptr: Pin&lt;Ptr&lt;Unmovable&gt;&gt; = Ptr::pin(unmovable);
+// Pin::as_mut() 调用了 Ptr::deref_mut() 使得unmovable移动了
+// 破坏了`Pin`的invariant，unsoundnesss!
+// 我们可以根据这个漏洞来构造出UB。
+ptr.as_mut();
+<span class="boring">}</span></code></pre></pre>
+<p>事实上，<code>Pin</code>曾经也在标准库中发生过同样的问题。。。（<code>&amp;T</code>, <code>&amp;mut T</code>, <code>Box&lt;T&gt;</code>, <code>Pin&lt;P&gt;</code>可以打破coherence rules，所以能直接构造出来这样的漏洞，但后续修复了）</p>
+<p>而现在因为coherence rule你无法这么做——只要你的invariant在本地已经被保证了的，就不能被第三方破坏。所以，在Rust中可以严格地划分责任，究竟是谁破坏了invariant：如果使用者正常使用的情况出了bug，那么是库作者的bug，因为正常使用是无法破坏库内部的invariant的。</p>
+<p>（但我很好奇，haskell，swift这些可以随意为第三方库实现第三方的typeclass(protocol)的语言是如何保证自己的库不被下游或者其它第三方库所影响的）</p>
+<h1 id="invariant与unsafe的关系"><a class="header" href="#invariant与unsafe的关系">Invariant与unsafe的关系</a></h1>
+<p>不过Rust的类型系统并不是万能的，有些invariant是无法靠类型系统来证明的，其中就包括一些validity（语言级invariant），这些invariant就需要程序员自己去保证了。其它invariant破坏了，可能影响比较小，但validity不行，太重要了，一碰就炸，所以rust给了一个<code>unsafe</code>的关键字来表示validity相关的问题。</p>
+<ul>
+<li><code>unsafe fn</code>：表示一个接口有一些invariant，如果调用者不保证就有可能破坏掉一些validity，从而发生UB。这些invariant则可以当做<strong>公理</strong>直接在接口的实现中使用。</li>
+<li><code>unsafe {}</code>：则表示确保已经遵守了内部的一些invariant。rust会<strong>完全</strong>信任程序员给的承诺。</li>
+<li><code>unsafe trait</code>/<code>unsafe impl</code>类似。</li>
+</ul>
+<p>于是rust被unsafe一分为二，safe rust是有rust类型系统证明的一部分（出问题责任在编译器），unsafe rust则是需要程序员自己证明安全的一部分（出问题责任在程序员）。</p>
+<p>什么应该接口(<code>fn</code>和<code>trait</code>)标记为<code>unsafe</code>，在rust中很克制，并不是所有类型系统无法证明的invariant都应该标记。<strong>只有那些和validity相关的invariant，以及FFI才应该标记为unsafe</strong>，而且是能不标就不标。比如说<code>UnwindSafe</code>就没有标为unsafe，因为同在标准库内，没有东西会因为不unwind会产生UB，而使用标准库且不使用任何unsafe的情况下，也不会产生UB，所以就没有标。（但我更愿意将这种无法在safe下确切证明的性质，称为hint，而非invariant，因为没有人会为其负责；就像一开始定义的<code>Even</code>一样）</p>
+<p>FFI是一个比较特别的情况，它与validity不一样，它的正确性不由rust的编译器保证，因为Rust完全不知道FFI另一边的信息。但FFI的另一侧可以做任何事情，所以理论上执行FFI是永远都不安全的。所以这时候就要求程序员知道FFI干了啥， <code>unsafe { call_ffi() }</code>的含义则变成，“我已知悉调用FFI所带来的后果，并愿意接受其带来的所有影响”。</p>
+<p>除了什么才应该标<code>unsafe</code>以外，我们也要求对<code>unsafe</code>的内容进行严格的审查。</p>
+<p>首先是对接口上的<code>unsafe</code>对应的invariant的检查。比如说invariant是否充分（满足invariant就安全了吗）？比如invariant间是否矛盾（<code>x: u64</code>却要求<code>x &lt; 0</code>，这就没法实现）？</p>
+<p>然后是严格检查<code>unsafe {}</code>/<code>unsafe impl</code>里的条件是否满足。有些东西是不能依赖的，那些没有被证明且没有被标记为unsafe的invariant，比如</p>
+<ul>
+<li>前文的<code>Even</code>，声称的为偶数</li>
+<li>对于一个未知的<code>T: UnwindSafe</code>所“声称”的unwindsafe</li>
+<li>对于一个未知的<code>T: Ord</code>，所“声称”的全序</li>
+</ul>
+<p>因为这些都能在safe的情况下违反掉这些接口声称的invariant，但在safe的情况下我们不能”追责“。（again，我觉得这种就应该叫hint）一般来说可以依赖的是：</p>
+<ul>
+<li><strong>具体类型</strong>的一些性质。比如说<code>u64: Ord</code>满足全序，这一点你是可以确保的。这时候具体类型就相当于一个白盒，你可以知道这个类型的所有性质。</li>
+<li>通过unsafe声明的invariant。</li>
+</ul>
+<p>人是不可靠的。那么我们应该如何检查我们是否违反了validity呢？有工具，但不多。目前我们可以通过MIRI（一个rust的解释器，目前可以理解为这是rust的标准行为）去运行你的rust程序（仅限于纯rust代码）。MIRI只维护rust所有正确行为的状态，当你的程序触发UB的时候，MIRI就会报错。但这是有限制的，MIRI只能告诉你UB了，但无法理解你是违反了那一个invariant而UB了；然后MIRI也不可能跑完所有情况；就算跑完所有情况发现没有UB，也不能证明你提供的接口是sound的。（就像测试一样）</p>
+<p>还有一些功能有限的形式化证明工具，比如<a href="https://flux-rs.github.io/flux/index.html">flux</a>，这里就不再展开。</p>
+<p>unsafe算是Rust中一大特色了。如果没有unsafe，但又要完全安全，就会有这些情况：</p>
+<ol>
+<li>所有validity都可以用类型证明——要求类型系统足够强大（dt起步，可以证明下标合法），可以表达复杂条件。代价就是类型系统空前复杂，对于使用者心智负担很重，对于实现者也很难证明类型系统的可靠性，另外基本都会碰到undecidable的理论天花板。</li>
+<li>所有validity都有运行时的动态检查，或者说以运行时的代价消除UB——这就会在各种地方引入不可避免的开销，性能难以做到极致。甚至限制用户做一些底层的操作（每次都要喷一遍，hs没法自己通过语言自身提供的语法定义数组，只能靠运行时的开洞或FFI）</li>
+</ol>
+<h1 id="再补充一点点"><a class="header" href="#再补充一点点">再补充一点点</a></h1>
+<ol>
+<li>
+<p>rust的类型系统还没被证明是可靠的，也就是说一些规则可能有矛盾（不一致），所以现阶段对invariant的证明也不一定可靠。</p>
+</li>
+<li>
+<p>rust的标准库也还没被证明是soundness的，也就是说有些接口的invariant有可能会被破坏。</p>
+</li>
+<li>
+<p>rust的绝大数第三方库没有验证是否soundness，尤其是内部用到unsafe的库。</p>
+</li>
+<li>
+<p>rust的编译器也有可能破坏invariant，进行错误的优化，让我们在safe rust下构造出<a href="https://play.rust-lang.org/?version=stable&amp;mode=release&amp;edition=2021&amp;gist=2179a4f4567edd276818c7869aac7e60">segment fault</a>。</p>
+</li>
+<li>
+<p>运行rust程序的平台也有可能破坏invariant，比如说<code>proc/self/mem</code>可以破坏内存独占的invariant，修改内存。但从实践意义来说，rust接受这种cornercase。</p>
+</li>
+</ol>
+<p>以后可能1和2会得到解决，但是345看起来是没法避免的，也就是说rust的安全也是有限制的，有些关键的地方还是得靠人来决定，但人永远是不可靠的。让我想起了linus关于安全所说的一句话：</p>
+<p><img src=".%5Cimages%5Cshit.jpg" alt="Shit Happens" /></p>
+<p>不过，尽管如此，rust的安全性仍然是有统计学意义论支撑，而且出了问题责任也分明。这同样十分有意义。</p>
+<hr />
+<p>参考：</p>
+<ul>
+<li>https://github.com/rust-lang/unsafe-code-guidelines/issues/428</li>
+<li>https://www.ralfj.de/blog/2018/08/22/two-kinds-of-invariants.html</li>
+<li>https://doc.rust-lang.org/stable/std/os/unix/io/index.html#procselfmem-and-similar-os-features</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="当我们在rust中讨论unsafe的时候，究竟是在说什么.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="todo.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="当我们在rust中讨论unsafe的时候，究竟是在说什么.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="todo.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

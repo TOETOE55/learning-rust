@@ -1,0 +1,657 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>讲讲让我熬了几天夜的Drop Check - Rust写作计划</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="theme/learningrust.css">
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="简介.html">简介</a></li><li class="chapter-item expanded "><a href="Rust整体介绍.html"><strong aria-hidden="true">1.</strong> Rust整体介绍</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="来谈谈Rust的大目标和原则.html"><strong aria-hidden="true">1.1.</strong> 来谈谈Rust的大目标和原则</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">1.2.</strong> Rust项目，团队，工作组，社区，基金会，以及如何贡献代码</a></li></ol></li><li class="chapter-item expanded "><a href="Rust基础概念.html"><strong aria-hidden="true">2.</strong> Rust基础概念</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="当我们在rust中讨论“所有权”的时候，究竟是在说什么.html"><strong aria-hidden="true">2.1.</strong> 当我们在Rust中讨论“所有权”的时候，究竟是在说什么</a></li><li class="chapter-item expanded "><a href="当我们在rust中讨论unsafe的时候，究竟是在说什么.html"><strong aria-hidden="true">2.2.</strong> 当我们在Rust中讨论unsafe的时候，究竟是在说什么</a></li><li class="chapter-item expanded "><a href="稍微聊聊Rust中的Invariant.html"><strong aria-hidden="true">2.3.</strong> 稍微聊聊Rust中的Invariant —— 那些必须保持的性质</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.4.</strong> Rust程序的组成</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.5.</strong> Rust的类型系统(type/trait/borrow checker等)</a></li><li class="chapter-item expanded "><a href="rust中的implItem.html"><strong aria-hidden="true">2.6.</strong> Rust中的impl item</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.7.</strong> 宏</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.8.</strong> 库/链接</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.9.</strong> 工具链相关</a></li></ol></li><li class="chapter-item expanded "><a href="一些语言和库的细节.html"><strong aria-hidden="true">3.</strong> 一些语言和库的细节</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="讲讲让我熬了几天夜的DropCheck.html" class="active"><strong aria-hidden="true">3.1.</strong> 讲讲让我熬了几天夜的Drop Check</a></li><li class="chapter-item expanded "><a href="RustPinApi真难啊.html"><strong aria-hidden="true">3.2.</strong> Rust Pin api真难啊</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">3.3.</strong> 多线程</a></li></ol></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">4.</strong> 设计模式以及编码技巧</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="StateMachinePattern.html"><strong aria-hidden="true">4.1.</strong> State machine Pattern</a></li><li class="chapter-item expanded "><a href="Rust设计模式探索_crate间接口相互调用.html"><strong aria-hidden="true">4.2.</strong> crate间接口相互调用</a></li></ol></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">5.</strong> 优秀开源项目架构介绍</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">5.1.</strong> rust analyzer</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">5.2.</strong> rustc</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">5.3.</strong> servo</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust写作计划</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="讲讲让我熬了几天夜的drop-check"><a class="header" href="#讲讲让我熬了几天夜的drop-check">讲讲让我熬了几天夜的Drop Check</a></h1>
+<blockquote>
+<p>收集到关于drop check的资料：</p>
+<ul>
+<li>
+<p><a href="https://rust-lang.github.io/rfcs/0769-sound-generic-drop.html">RFC0769</a> 已被 rfc1238部分替代</p>
+</li>
+<li>
+<p><a href="https://rust-lang.github.io/rfcs/1238-nonparametric-dropck.html">RFC1238</a> 目前实现的规则，其中例外规则的语法由rfc1327替代</p>
+</li>
+<li>
+<p><a href="https://rust-lang.github.io/rfcs/1327-dropck-param-eyepatch.html">RFC1327</a> drop check的例外规则，目前正在推动稳定</p>
+</li>
+<li>
+<p><a href="https://doc.rust-lang.org/nomicon/dropck.html">nomicon</a> drop check章节</p>
+</li>
+<li>
+<p><a href="https://rust-lang.github.io/rfcs/1860-manually-drop.html">RFC1860</a> ManuallyDrop不会有drop glue</p>
+</li>
+<li>
+<p>还有一个讨论话题<a href="https://rust-lang.zulipchat.com/#narrow/stream/122651-general/topic/.E2.9C.94.20Confusing.20dropck/near/310689272">confusing dropck</a></p>
+</li>
+</ul>
+<p>补充</p>
+<ul>
+<li><a href="https://github.com/rust-lang/rust/issues/70841">PhantomData<T> no longer dropck?</a> 目前不会析构的类型不会进行drop check。</li>
+<li><a href="https://github.com/rust-lang/rust/pull/103413#issuecomment-1325099615">PhantomData: fix documentation wrt interaction with dropck</a> 原来目前官方对dropck还没有共识……如果到时这个PR合入之后再修改一下文章</li>
+</ul>
+</blockquote>
+<hr />
+<h2 id="drop与析构函数"><a class="header" href="#drop与析构函数">Drop与析构函数</a></h2>
+<p>在讨论之前先理一下<a href="https://doc.rust-lang.org/stable/std/ops/trait.Drop.html"><code>Drop</code></a>和析构函数的关系。<code>Drop::drop</code>是析构函数的一部分，可选实现，编译器通过drop glue得到一个完整的析构函数。</p>
+<blockquote>
+<p>首先，析构函数行为由值的类型所决定，一个类型<code>T</code>的**析构函数(Destructor)**将会做这些事情：</p>
+<ol>
+<li>
+<p>如果<code>T: Copy</code>或者<code>T == ManuallyDrop&lt;_&gt;</code>，则没有析构函数。</p>
+</li>
+<li>
+<p>如果<code>T: Drop</code>，则先对其值调用<code>&lt;T as Drop&gt;::drop</code></p>
+</li>
+<li>
+<p>然后递归地调用其自身所有字段的析构函数，比如</p>
+<ol>
+<li>
+<p><code>T</code>是结构体，那么则按照字段的声明顺序调用字段的析构函数</p>
+</li>
+<li>
+<p><code>T</code>是数组，则按顺序调用元素的析构函数</p>
+</li>
+<li>
+<p><code>T</code>是Trait Object，则对其值调用内部实际类型的析构函数</p>
+</li>
+<li>
+<p>...</p>
+</li>
+</ol>
+</li>
+</ol>
+<p>其中编译器将步骤2和步骤3粘起来成为完整的析构函数的操作叫做drop glue，其产物为<a href="https://doc.rust-lang.org/stable/std/ptr/fn.drop_in_place.html"><code>drop_in_place</code></a></p>
+</blockquote>
+<p>没有析构函数的类型，在MIR阶段不会插入<code>DROP(var)</code>的指令，不会进行析构，于是也不会进行drop check</p>
+<h2 id="为什么要check"><a class="header" href="#为什么要check">为什么要check？</a></h2>
+<p>众所周知，rust通过RAII来管理内存——值会在退出作用域的时候被析构。但按照目前的规定的析构顺序，比如变量是先声明先析构，就有可能发生后析构的值仍然借用着已经析构了的值的情况，从而有可能发生UAF(use after free)。</p>
+<p>于是需要引入一个drop check：保证<strong>一个值在析构时，其析构函数不会<em>访问</em>到一个悬垂引用<code>&amp;'a _</code>所引用的值</strong>。</p>
+<p>与borrow check中一般的规则不同，borrow check在使用一个值的时候是不允许存在悬垂引用的，但析构函数有些情况是允许的——因为大多数类型drop glue产生的析构函数不会通过悬垂引用去访问内存，比如<code>(&amp;str, String)</code>。从这个角度来说drop check的会比borrow checker的一般规则要弱一些。</p>
+<p>另外borrow check也不能覆盖所有drop check所检查的情况。一些类型内部的析构顺序（比如数组会从前到后析构元素），并不会在MIR上体现出来，borrow checker无法进行检查。于是从这个角度来说，drop check还是borrow check的补充。</p>
+<p>那么drop check 的具体规则是什么呢？</p>
+<h2 id="年轻人的第一个drop-check"><a class="header" href="#年轻人的第一个drop-check">年轻人的第一个drop check</a></h2>
+<p>从一个例子讲起：</p>
+<pre><pre class="playground"><code class="language-rust edition2021">//! 例子1
+
+struct Foo&lt;T: Debug&gt;(T);
+
+impl&lt;T: Debug&gt; Drop for Foo&lt;T&gt; {
+    fn drop(&amp;mut self) {
+        println!(&quot;dropping Foo with {:?}&quot;, self.0);
+    }
+}
+
+fn main() {
+    let _foo;
+    let s = String::from(&quot;123&quot;);
+    _foo = Foo(&amp;*s);
+}
+
+/* 编译报错：
+
+error[E0597]: `s` does not live long enough
+  --&gt; src/main.rs:16:23
+   |
+16 |     _foo = Foo(&amp;*s);
+   |                  ^ borrowed value does not live long enough
+17 | }
+   | -
+   | |
+   | `s` dropped here while still borrowed
+   | borrow might be used here, when `_foo` is dropped and runs the `Drop` code for type `Foo`
+   |
+   = note: values in a scope are dropped in the opposite order they are defined
+*/</code></pre></pre>
+<p>报错的原因是：</p>
+<ol>
+<li>
+<p>按照局部变量的析构顺序，<code>s</code>先析构于<code>_foo</code>，则<code>_foo</code>在析构的时候仍包含了一个悬垂引用<code>&amp;'s str</code>；</p>
+</li>
+<li>
+<p><code>_foo</code>的析构函数会调用<code>&lt;Foo&lt;T&gt; as Drop&gt;::drop</code>，编译器不知道<code>drop</code>中是否通过<code>T</code>访问到了<code>&amp;'s str</code>所引用的值（确实访问到了，通过<code>Debug</code>的方法），于是添加了一个约束：<code>T</code> (<strong>strictly</strong>) outlive <code>_foo</code>的作用域（记为<code>'_foo</code>）。</p>
+<p>此处<code>T == &amp;'s str</code>，那么<code>T: '_foo</code> 等价于 <code>'s: '_foo</code>。</p>
+</li>
+<li>
+<p>借用检查器发现<code>'s</code>比<code>'_foo</code>短，然后报错。</p>
+</li>
+</ol>
+<p>不过如果我们将<code>impl Drop</code>给去掉，上面的代码就能正常编译了。因为编译器能明确地知道<code>_foo</code>的析构函数不会访问<code>&amp;'s str</code>所引用的值，不会进行第二步的检查。</p>
+<h2 id="strictly-outlive"><a class="header" href="#strictly-outlive">strictly outlive？</a></h2>
+<p>刚刚加粗了<strong>strictly</strong>，是因为有这种情况：</p>
+<pre><pre class="playground"><code class="language-rust edition2021">//! 例子2
+
+struct Foo&lt;T: Debug&gt;(T);
+
+// 同样，如果不写这个实现，下面的代码仍然可以编译过。
+impl&lt;T: Debug&gt; Drop for Foo&lt;T&gt; {
+    fn drop(&amp;mut self) {
+        println!(&quot;dropping Foo with {:?}&quot;, self.0);
+    }
+}
+
+fn main() {
+    let tuple = (String::from(&quot;123&quot;), None); // 元组的析构顺序是从前到后
+    tuple.1 = Some(Foo(&amp;tuple.0));
+}</code></pre></pre>
+<p>这段代码将和第一个例子产生同一个报错。但这种情况下，<code>tuple.0</code>和<code>tuple.1</code>在同一个作用域下（记为<code>'tuple</code>），而不是像第一个例子那样<code>_foo</code>的作用域包含<code>s</code>作用域。如果仅仅要求<code>T: 'tuple</code>，这段代码是能编译过的，然后<code>tuple.1</code>析构时就会使用到悬垂引用。所以这里drop check需要strictly outlive的断言。</p>
+<p>不过strictly outlive这种断言用户目前没法写出来，仅存在于编译器内部。</p>
+<p>那么第一和第二个例子引入了drop check的第一个规则：</p>
+<blockquote>
+<p>记<code>foo: Foo&lt;..., T, ...&gt;</code>，其中<code>T</code>可以是个生命周期参数，也可以是个泛型参数。然后<code>foo</code>的作用域记为<code>'foo</code>，当<code>foo</code>被析构的时候：</p>
+<ol>
+<li>如果<code>Foo&lt;..., T, ...&gt;</code>  实现了 <code>Drop</code>，都有<code>T</code> strictly outlive <code>'foo</code> 。</li>
+</ol>
+</blockquote>
+<h2 id="睁一只眼闭一只眼的drop-check"><a class="header" href="#睁一只眼闭一只眼的drop-check">睁一只眼闭一只眼的drop check</a></h2>
+<p>但这个检查会错杀一些本来安全的程序：</p>
+<pre><pre class="playground"><code class="language-rust edition2021">//! 例子3
+
+struct Foo&lt;T&gt;(T, &amp;'static str);
+
+impl&lt;T&gt; Drop for Foo&lt;T&gt; {
+    fn drop(&amp;mut self) {
+        // 没有访问`T`
+        println!(&quot;dropping Foo with {:?}&quot;, self.1);
+    }
+}
+
+fn main() {
+    let _foo;
+    let s = String::from(&quot;123&quot;);
+    _foo = Foo(&amp;*s);
+}</code></pre></pre>
+<p>这个例子会报与例子1相同的编译错误，因为根据规则1，在<code>_foo</code>析构时同样会引入<code>T: '_foo</code>的约束。但<code>Foo</code>的析构函数完全不会访问到已经析构掉的<code>s</code>，所以这份代码是安全的。于是rfc1327引入了豁免dropck的语法与规则：</p>
+<pre><pre class="playground"><code class="language-rust edition2021">//! 例子4
+
+struct Foo&lt;T&gt;(T, &amp;'static str);
+
+unsafe impl&lt;#[may_dangle] T&gt; Drop for Foo&lt;T&gt; {
+    fn drop(&amp;mut self) {
+        println!(&quot;dropping Foo with {:?}&quot;, self.1);
+    }
+}
+
+fn main() {
+    let _foo;
+    let s = String::from(&quot;123&quot;);
+    _foo = Foo(&amp;*s);
+}</code></pre></pre>
+<p>这个例子就可以通过编译了。</p>
+<p>这里多了一个特殊的attribute<code>#[may_dangle]</code>标注在泛型<code>T</code>上，表示<code>T</code>可以是个悬垂引用（或者是 一个可能访问到一个悬垂引用的类型），在dropck时就会跳过这个参数。另外此时<code>Drop</code>需要<code>unsafe impl</code>，因为实现者需要自己保证<code>drop</code>的实现中不会使用到悬垂引用。</p>
+<p>于是目前drop check的规则是：</p>
+<blockquote>
+<p>记<code>foo: Foo&lt;..., T, ...&gt;</code>，其中<code>T</code>可以是个生命周期参数，也可以是个泛型参数。然后<code>foo</code>的作用域记为<code>'foo</code>，当<code>foo</code>被析构的时候：</p>
+<ol>
+<li>
+<p>如果<code>Foo&lt;..., T, ...&gt;</code>  实现了 <code>Drop</code>，都有<code>T</code> strictly outlive <code>'foo</code> 。</p>
+</li>
+<li>
+<p>除非<code>T</code>在实现<code>Drop</code>时标记了<code>#[may_dangle]</code></p>
+</li>
+</ol>
+</blockquote>
+<h2 id="怎么就出错了呢"><a class="header" href="#怎么就出错了呢">怎么就出错了呢</a></h2>
+<p>现在我们来实现一个<code>MyBox</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct MyBox&lt;T&gt; {
+    ptr: NonNull&lt;T&gt;,
+}
+
+impl&lt;T&gt; MyBox&lt;T&gt; {
+    fn new(x: T) -&gt; Self {
+        if size_of::&lt;T&gt; == 0 {
+            // Allocator不允许为ZST分配内存
+            return Self {
+                ptr: NonNull::dangling(),
+            };
+        }
+        
+        unsafe {
+            let layout = Layout::new::&lt;T&gt;();
+            let ptr = alloc(layout);
+            assert!(!ptr.is_null);
+            write(ptr as *mut _, x);
+            
+            Self {
+                ptr: NonNull::new_unchecked(ptr),
+            }
+        }
+    }
+}
+
+// Box的Drop也加了`#[may_dangle]`，那我也加！
+unsafe impl&lt;#[may_dangle] T&gt; Drop for MyBox&lt;T&gt; {
+    fn drop(&amp;mut self) {
+        unsafe {
+            drop_in_place(self.ptr.as_ptr());
+            
+            let layout = Layout::new::&lt;T&gt;();
+            dealloc(self.ptr.as_ptr() as *mut _, layout);
+        }
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>这个实现其实是有问题的，虽然如果把例一中的<code>Foo</code>替换成这个<code>MyBox</code>不会报错也不会产生ub，因为这里确实不会访问到<code>&amp;'s str</code>所引用的值，仅仅只是将<code>&amp;'s str</code>的内存给释放了。但考虑下面的代码：</p>
+<pre><pre class="playground"><code class="language-rust edition2021">//! 例子5
+
+fn main() {
+    let _foo;
+    let s = String::from(&quot;123&quot;);
+    _foo = MyBox::new(Foo(&amp;*s)); // 例子1中的Foo
+}</code></pre></pre>
+<p>这份代码是能编译过的，但是会产生ub——<code> drop_in_place(self.ptr.as_ptr())</code>这行违反了<code>unsafe impl Drop</code>的约定：</p>
+<ul>
+<li>首先<code>s</code>仍然是比<code>_foo</code>先析构，即<code>&amp;'s str</code>在<code>_foo</code>析构时是一个悬垂引用；</li>
+<li>当<code>_foo</code>析构的时候，其<code>MyBox::drop</code>会先调用<code>Foo</code>析构函数；</li>
+<li><code>Foo</code>的析构函数，调用<code>Foo::drop</code>，尝试访问了<code>&amp;'s str</code>所引用的值，因为<code>&amp;'s str</code>是个悬垂引用，此处产生ub。</li>
+</ul>
+<p>修复这个错误可以去掉<code>#[may_dangle]</code>。但将<code>MyBox</code>换回<code>Box</code>，这份代码将无法通过编译（还是例子一的错误）。这是为什么呢？</p>
+<p>其实是因为<code>Box&lt;T&gt;</code>在析构的时候，也会对<code>T</code>进行drop check，但<code>MyBox&lt;T&gt;</code>并不会。这里小心混淆，<code>#[may_dangle]</code>是在<code>Self</code>的drop check时跳过对应参数，而不是跳过对应参数的drop check。</p>
+<p>下面的代码是会报错的，因为<code>Foo</code>的drop check生效了，尽管<code>Bar</code>加了<code>#[may_dangle]</code>：</p>
+<pre><pre class="playground"><code class="language-rust edition2021">//! 例子6
+
+use 例子1::Foo;
+use 例子4::Foo as Bar;
+
+fn main() {
+    let _foo;
+    let s = String::from(&quot;123&quot;);
+    _foo = Bar(Foo(&amp;*s)); 
+}</code></pre></pre>
+<h2 id="phantomdata来救场"><a class="header" href="#phantomdata来救场">PhantomData来救场</a></h2>
+<p>那怎么给<code>MyBox&lt;T&gt;</code>补上<code>T</code>的drop check呢。</p>
+<p>首先我们回顾一下例子2，分析一下其报错的原因。<code>tuple</code>是个元组，其析构为什么会给<code>Foo</code>进行drop check呢？这是因为drop check的下一条规则：它会递归地给<code>tuple</code>的所有字段进行drop check。</p>
+<p>例子6报错的原因也是一样的，<code>Bar</code>在析构的时候，不仅对<code>Bar</code>自身进行drop check，也对其字段<code>Foo</code>进行drop check，然后<code>Foo</code>不满足条件就报错了。</p>
+<p>那么现在drop check就有第三条规则了：</p>
+<blockquote>
+<p>记<code>foo: Foo&lt;..., T, ...&gt;</code>，其中<code>T</code>可以是个生命周期参数，也可以是个泛型参数。然后<code>foo</code>的作用域记为<code>'foo</code>，当<code>foo</code>被析构的时候：</p>
+<ol>
+<li>
+<p>如果<code>Foo&lt;..., T, ...&gt;</code>  实现了 <code>Drop</code>，都有<code>T</code> strictly outlive <code>'foo</code> 。</p>
+</li>
+<li>
+<p>除非<code>T</code>在实现<code>Drop</code>时标记了<code>#[may_dangle]</code></p>
+</li>
+<li>
+<p>递归地给<code>foo</code>所有字段进行drop check</p>
+</li>
+</ol>
+</blockquote>
+<p>一步步点开<code>Box</code>的实现我们会发现，里面有个类型为<code>PhantomData&lt;T&gt;</code>的字段，其定义：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct Unique&lt;T: ?Sized&gt; {
+    pointer: NonNull&lt;T&gt;,
+    _marker: PhantomData&lt;T&gt;,
+}
+
+#[lang = &quot;phantom_data&quot;]
+#[stable(feature = &quot;rust1&quot;, since = &quot;1.0.0&quot;)]
+pub struct PhantomData&lt;T: ?Sized&gt;;
+<span class="boring">}</span></code></pre></pre>
+<p><code>PhantomData&lt;T&gt;</code>是rust中的一个洞（因为这个定义用户写不出），它假装自己有一个<code>T</code>，但它实际上是个ZST，在他进行drop check的时候，也会对<code>T</code>进行drop check。</p>
+<p>破案了。</p>
+<p>那么仿造<code>Box</code>，我们只要在<code>MyBox</code>的定义上加上一个<code>PhantomData</code>就可以让<code>T</code>的drop check回来了：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct MyBox&lt;T&gt; {
+    ptr: NonNull&lt;T&gt;,
+    _marker: PhantomData&lt;T&gt;,
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="那些被特殊照顾的类型"><a class="header" href="#那些被特殊照顾的类型">那些被特殊照顾的类型</a></h2>
+<p>这里解释一下为什么原先<code>MyBox&lt;T&gt;</code>，<code>T</code>的drop check不生效。这是因为<code>NonNull&lt;T&gt;</code>内部是个裸指针，而裸指针是不需要进行drop check的。不需要drop check的类型还有：</p>
+<ul>
+<li>基础类型（<code>bool</code>，数字类型，<code>char</code>，<code>str</code>，<code>!</code>）</li>
+<li>指针类型（借用、裸指针、函数指针）</li>
+<li>函数定义类型</li>
+</ul>
+<p>这些都是自然成立的，他们都没有析构函数（BTW，我觉得<code>ManuallyDrop</code>也可以不check呀）。</p>
+<p>那么连同上面提到的<code>PhatomData</code>，我们终于可以给出一个比较完整的drop check规则了：</p>
+<blockquote>
+<p>记<code>foo: Foo</code>，然后<code>foo</code>的作用域记为<code>'foo</code>，当<code>foo</code>被析构的时候：</p>
+<ol>
+<li>
+<p>当<code>Foo</code>以下类型不需要drop check</p>
+<ul>
+<li>基础类型（<code>bool</code>，数字类型，<code>char</code>，<code>str</code>，<code>!</code>）</li>
+<li>指针类型（借用、裸指针、函数指针）</li>
+<li>函数定义类型</li>
+<li><code>ManuallyDrop&lt;T&gt;</code></li>
+</ul>
+</li>
+<li>
+<p>当<code>Foo == PhantomData&lt;T&gt;</code>时，对<code>T</code>进行drop check</p>
+</li>
+<li>
+<p>当<code>Foo</code>的有一个参数列表<code>Foo&lt;..., T, ...&gt;</code>，<code>T</code>可以是lifetime参数，也可以是泛型参数</p>
+<ol>
+<li>
+<p>如果<code>Foo&lt;..., T, ...&gt;</code>  实现了 <code>Drop</code>，都有<code>T</code> strictly outlive <code>'foo</code> 。</p>
+</li>
+<li>
+<p>除非<code>T</code>在<code>Foo</code>实现<code>Drop</code>时标记了<code>#[may_dangle]</code></p>
+</li>
+<li>
+<p>递归地给<code>Foo</code>所有字段进行drop check</p>
+</li>
+</ol>
+</li>
+</ol>
+</blockquote>
+<h2 id="习题时间"><a class="header" href="#习题时间">习题时间</a></h2>
+<p>解释下面的代码为什么无法编译：</p>
+<pre><pre class="playground"><code class="language-rust edition2021">struct Foo&lt;T&gt;(T);
+
+impl&lt;T&gt; Drop for Foo&lt;T&gt; {
+    fn drop(&amp;mut self) {
+    }
+}
+
+fn main() {
+    let _foo;
+    let s = String::from(&quot;123&quot;);
+    _foo = foo(&amp;*s);
+}
+
+fn foo&lt;'s&gt;(_: &amp;'s str) -&gt; Foo&lt;fn() -&gt; &amp;'s str&gt; {
+    Foo(|| &quot;321&quot;)
+}</code></pre></pre>
+<h3 id="tips"><a class="header" href="#tips">tips</a></h3>
+<p>一些outlive规则（与形变规则无关）：</p>
+<ul>
+<li>不带泛型参数的类型 outlive 'static</li>
+<li><code>&amp;'a T: 'a</code> </li>
+<li><code>fn() -&gt; &amp;'a T: 'a</code></li>
+<li><code>fn(&amp;'a T): 'a</code></li>
+<li>ADT <code>Foo&lt;'a&gt;: 'a</code></li>
+<li>ADT <code>Foo&lt;T&gt;: 'a</code> 当且仅当<code>T: 'a</code></li>
+<li><code>dyn Foo + 'a: 'a</code> </li>
+<li><code>dyn Foo + 'a: 'a</code></li>
+<li><code>dyn Foo + 'a: 'a</code></li>
+<li><code>dyn Foo&lt;Assoc = T&gt;: 'a</code>当且仅当<code>T: 'a</code></li>
+<li><code>&amp;'a T: 'r</code> 当且仅当 <code>'a: 'r</code></li>
+<li><code>impl Trait</code> 同 <code>dyn Trait</code></li>
+<li><code>fn foo&lt;T&gt;(t: T) { ...任意local的'a... }</code> 都有<code>T: 'a</code></li>
+<li><code>&amp;'a T</code> 的必要条件是 <code>T: 'a</code></li>
+</ul>
+<h2 id="补充phantomdata怎么不进行drop-check"><a class="header" href="#补充phantomdata怎么不进行drop-check">补充：PhantomData怎么不进行drop check？</a></h2>
+<p>其中的代码竟然能通过编译？</p>
+<pre><pre class="playground"><code class="language-rust edition2021">//! 例子8
+
+use std::marker::PhantomData;
+
+struct Pending&lt;T&gt; {``
+    phantom: PhantomData&lt;T&gt;,
+}
+
+fn pending&lt;T&gt;(value: T) -&gt; Pending&lt;T&gt; {
+    Pending { 
+        phantom: PhantomData,
+    }
+}
+
+struct Inspector&lt;'a&gt; {
+    value: &amp;'a String,
+}
+
+impl Drop for Inspector&lt;'_&gt; {
+    fn drop(&amp;mut self) {
+        eprintln!(&quot;drop inspector {}&quot;, self.value)
+    }
+}
+
+fn main() {
+    let p: Pending&lt;Inspector&gt;;
+    let s = &quot;hello&quot;.to_string();
+    p = pending(Inspector { value: &amp;s });
+}</code></pre></pre>
+<p>按刚刚的drop check规则来分析一下p:</p>
+<ul>
+<li>对<code>p: Pending&lt;Inspector&lt;'s&gt;&gt;</code>进行drop check
+<ul>
+<li>等价于 对<code>p.phantom: PhantomData&lt;Inspector&lt;'s&gt;&gt;</code>进行drop check
+<ul>
+<li>等价于 对<code>Inspector&lt;'s&gt;</code>进行drop check
+<ul>
+<li><code>Inspector&lt;'s&gt;: Drop</code>，则<code>'s</code> strictly outlive <code>'p</code></li>
+<li>与<code>'p: 's</code>产生矛盾</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>编译失败</li>
+</ul>
+<p>但这里却编译成功了？</p>
+<p>这段代码其实在NLL合入之后才能编译通过。NLL在一个变量析构的时候会往MIR里插入DROP(var)指令，在变量析构的时候才会进行drop check。而PhantomData<T>: Copy，不需要析构，rust就不会往MIR中插入析构指令，也就不进行drop check了。</p>
+<p>回到例子中，Pending<T>是由PhantomData<T>组合成的ADT，本身也没有实现Drop，于是也不会进行drop check，也没有刚刚我们分析的一串了。</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>assert!(!std::mem::needs_drop::&lt;Pending&lt;Foo&gt;&gt;());
+<span class="boring">}</span></code></pre></pre>
+<p>我这里再来点好玩的，既然不跑析构指令就能不drop check，那么下面代码也是可以编译的：</p>
+<pre><pre class="playground"><code class="language-rust edition2021">// 沿用例子1中的定义：
+fn main() {
+    let foo;
+    let s = String::from(&quot;123&quot;);
+    loop {} // NLL 会知道下面的代码不可达，包括foo的析构函数，于是这段代码也能编译通过。
+    foo = Foo(&amp;*s);
+}</code></pre></pre>
+<h2 id="补充drop-check与nll"><a class="header" href="#补充drop-check与nll">补充：drop check与NLL</a></h2>
+<p>NLL的规则可以简单概括为，将lifetime推导成借用第一次使用到最后一次使用的范围（MIR上）。但目前rust会在变量超出作用域时插入析构函数（可能带上一个drop flag），如果编译器没法确定析构函数是否访问到某个借用的时候（实现了Drop，而且没加<code>#[may_dangle]</code>；或者是<code>dyn trait</code>,<code>impl trait</code>），编译器只能假设借用的最后一次使用是到作用域结束的时候了——这时候NLL就会退化为LL。</p>
+<p>比如说这个例子，目前是编译不过的：</p>
+<pre><pre class="playground"><code class="language-rust edition2021">//! 例子9 沿用例子1的定义
+
+fn main() {
+    let foo;
+    let s = String::from(&quot;123&quot;);
+    foo = Foo(&amp;*s);
+    drop(foo); // 尽管移动走了foo
+} // 但是编译器还是会在这里插入DROP指令，变相延长了最后一次使用的范围。</code></pre></pre>
+<p>其实rust是可以分析出来MIR上那些路径会析构/不会析构/可能会析构的，但目前并没有将其应用到drop check中，导致目前drop check的限制还有点大。这种代码其实在循环里经常遇到，其实挺难受的。</p>
+<p>当然，这种限制也是可以绕过的</p>
+<pre><pre class="playground"><code class="language-rust edition2021">//! 例子10 沿用例子1的定义
+
+fn main() {
+    let foo;
+    let s = String::from(&quot;123&quot;);
+    foo = ManuallyDrop::new(Foo(&amp;*s)); // 通过`ManuallyDrop`跳过drop check
+    drop(ManuallyDrop::into_inner(foo));  // 再挪出来
+} </code></pre></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="一些语言和库的细节.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="RustPinApi真难啊.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="一些语言和库的细节.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="RustPinApi真难啊.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,540 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Rust Pin api真难啊 - Rust写作计划</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="theme/learningrust.css">
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="简介.html">简介</a></li><li class="chapter-item expanded "><a href="Rust整体介绍.html"><strong aria-hidden="true">1.</strong> Rust整体介绍</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="来谈谈Rust的大目标和原则.html"><strong aria-hidden="true">1.1.</strong> 来谈谈Rust的大目标和原则</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">1.2.</strong> Rust项目，团队，工作组，社区，基金会，以及如何贡献代码</a></li></ol></li><li class="chapter-item expanded "><a href="Rust基础概念.html"><strong aria-hidden="true">2.</strong> Rust基础概念</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="当我们在rust中讨论“所有权”的时候，究竟是在说什么.html"><strong aria-hidden="true">2.1.</strong> 当我们在Rust中讨论“所有权”的时候，究竟是在说什么</a></li><li class="chapter-item expanded "><a href="当我们在rust中讨论unsafe的时候，究竟是在说什么.html"><strong aria-hidden="true">2.2.</strong> 当我们在Rust中讨论unsafe的时候，究竟是在说什么</a></li><li class="chapter-item expanded "><a href="稍微聊聊Rust中的Invariant.html"><strong aria-hidden="true">2.3.</strong> 稍微聊聊Rust中的Invariant —— 那些必须保持的性质</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.4.</strong> Rust程序的组成</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.5.</strong> Rust的类型系统(type/trait/borrow checker等)</a></li><li class="chapter-item expanded "><a href="rust中的implItem.html"><strong aria-hidden="true">2.6.</strong> Rust中的impl item</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.7.</strong> 宏</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.8.</strong> 库/链接</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">2.9.</strong> 工具链相关</a></li></ol></li><li class="chapter-item expanded "><a href="一些语言和库的细节.html"><strong aria-hidden="true">3.</strong> 一些语言和库的细节</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="讲讲让我熬了几天夜的DropCheck.html"><strong aria-hidden="true">3.1.</strong> 讲讲让我熬了几天夜的Drop Check</a></li><li class="chapter-item expanded "><a href="RustPinApi真难啊.html" class="active"><strong aria-hidden="true">3.2.</strong> Rust Pin api真难啊</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">3.3.</strong> 多线程</a></li></ol></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">4.</strong> 设计模式以及编码技巧</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="StateMachinePattern.html"><strong aria-hidden="true">4.1.</strong> State machine Pattern</a></li><li class="chapter-item expanded "><a href="Rust设计模式探索_crate间接口相互调用.html"><strong aria-hidden="true">4.2.</strong> crate间接口相互调用</a></li></ol></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">5.</strong> 优秀开源项目架构介绍</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">5.1.</strong> rust analyzer</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">5.2.</strong> rustc</a></li><li class="chapter-item expanded "><a href="todo.html"><strong aria-hidden="true">5.3.</strong> servo</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust写作计划</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="rust-pin-api真难啊"><a class="header" href="#rust-pin-api真难啊">Rust Pin api真难啊</a></h1>
+<p>最近本来想写rust aliasing rules的，但这些规则并没有确定下来，相关的资料并不好找，先咕咕一段时间。先来分享一波关于Pin一些有趣的“洞”以及之后相关的一些修改。</p>
+<h2 id="unpin-hack"><a class="header" href="#unpin-hack">Unpin Hack</a></h2>
+<p>相关资料</p>
+<ul>
+<li><a href="https://github.com/rust-lang/unsafe-code-guidelines/issues/148">Stacked Borrows vs self-referential structs</a></li>
+<li><a href="https://github.com/rust-lang/miri/pull/1952">exclude mutable references to !Unpin types from uniqueness guarantees</a></li>
+</ul>
+<p>这一条是为rustc Unpin开的洞，也是和alias相关的。没了这个洞估计Pin api都没法做到soundness，但目前RFC和std文档都没有提到这个规则，<strong>默认这个hack暂时只提供给rust以及其标准库内使用</strong>。</p>
+<p>首先，rust中有两种特殊的引用要求<a href="https://llvm.org/docs/LangRef.html#parameter-attributes">noalias</a>，<code>&amp;mut T</code>和<code>Box&lt;T&gt;</code>，即在引用“活着”的时候不允许通过其它引用或指针访问或修改alias的内存。那么这个hack说的就是：<strong>对于<code>T: !Unpin</code>，不要求<code>&amp;mut T</code>和<code>Box&lt;T&gt;</code>noalias</strong>。</p>
+<p>那么根据这个规则，就可得到一个违反rust直觉的东西——*对于<code>T: !Unpin</code>的类型，允许多个<code>&amp;mut T</code>, <code>&amp;T</code>, <code>Box&lt;T&gt;</code>同时存在，甚至同时去访问和修改<code>T</code>！*不过这虽然safe但不sound，比如<code>mem::swap()</code>假设了所有<code>&amp;mut T</code>都是noalias，内存都是不重叠的；如果允许<code>fn dup_mut&lt;T: !Unpin&gt;(&amp;mut T) -&gt; (&amp;mut T, &amp;mut T)</code> safe，就会与已有的<code>mem::swap</code>产生冲突，导致ub。</p>
+<p>好了，我们为什么需要这条例外的规则呢？我们来考虑一段这代码：</p>
+<pre><pre class="playground"><code class="language-rust edition2021">async fn no_opt() {}
+
+fn main() {
+    let fut = async {
+        let mut local = 42;
+        let r = &amp;mut local;
+        no_opt().await; 
+        // 当引用跨`.await`的时候会产生自引用
+        //
+        // fut(state 2)
+        // ┌─────────────┐
+        // │ local = 42  │◄───┐
+        // ├─────────────┤    │
+        // │ r=&amp;mut local├────┘
+        // └─────────────┘
+
+        // 这里通过自引用访问`local`
+        println!(&quot;{}&quot;, *r);
+    };
+    
+    pin_mut!(fut);
+    
+    let waker = noop_waker();
+    let mut cx = Context::from_waker(&amp;waker);
+    
+    // `fut.as_mut()`创建了一个指向`fut`的独占借用
+    fut.as_mut().poll(&amp;mut cx);
+}</code></pre></pre>
+<p>如果没有unpin hack，这段代码其实违反了noalias的规则：</p>
+<ul>
+<li><code>fut.as_mut()</code>和<code>r</code>alias了<code>local</code>这片内存</li>
+<li><code>fut.as_mut()</code>和<code>r</code>都是独占借用，要求noalias</li>
+<li>在<code>fut.as_mut()</code>有效的期间，<code>r</code>访问了<code>local</code>，UB</li>
+</ul>
+<p>如果把上面代码解糖，并且去掉<code>Pin</code>相关的东西，大概长这样：</p>
+<pre><pre class="playground"><code class="language-rust edition2021">fn main() {
+    let mut local = 42;
+    // async block的自引用用的是裸指针存储
+    let raw_ptr = &amp;mut local as *mut i32; 
+    // 创建了一个指向`local`的独占借用，使得`raw_ptr`非法（不能再解引用了）
+    let safe_ref = &amp;mut local; 
+    // UB
+    println!(&quot;{}&quot;, unsafe { *raw_ptr }); 
+}</code></pre></pre>
+<p>这个UB其实非常微妙，一个下载量特别多的库<a href="https://crates.io/crates/owning_ref">owning_ref</a>也同样犯了这个错误，但这个库竟然有一千三百万的下载量。。。（这个库其实还有UAF的问题。。）</p>
+<p>于是Unpin hack便为这种情况给rust的alias rules开了后门。不过这种做法其实是有风险的——<code>Unpin</code>是一个trait，而且还是一个auto trait，可以为任意类型实现这个trait，或者实现其negative trait，意味着很容易把非自引用的类型给“牵涉进来”，有可能会把依赖noalias的地方爆破掉，又或者是把很多利用noalias进行优化给干没了。</p>
+<p>在trait上开后门其实影响是不太可控的，之所以目前没有正式确定下来这条规则，是希望探索一个更合理的方法去解决这个问题。现在有在讨论的一个方案是，提供类似一个<code>UnsafeCell</code>的Wrapper，去完成这个事情<a href="https://hackmd.io/@CV5q1SRASEuY8WfOgd_3iQ/BkmQIn7Bs"><code>unsafe_cell_mut</code></a>，不过api倒是要认真考虑，别把std搞unsound了 。</p>
+<p>（注：<code>UnsafeCell</code>目前也开了后门，即允许<code>&amp;UnsafeCell</code>的值可变，所谓interior mutable；如果<code>UnsafeCellMut</code>确定要做的话，我们也可以称为interior aliasable）</p>
+<h2 id="unsoundness-in-pin"><a class="header" href="#unsoundness-in-pin">Unsoundness in <code>Pin</code></a></h2>
+<p>相关资料</p>
+<ul>
+<li><a href="https://internals.rust-lang.org/t/unsoundness-in-pin/11311">Unsoundness in <code>Pin</code></a></li>
+<li><a href="https://github.com/rust-lang/rust/pull/67039">Use deref target in Pin trait implementations</a></li>
+<li><a href="https://github.com/rust-lang/rust/pull/68004">permit negative impls for non-auto traits</a> 给std开洞，可以用negative impl</li>
+<li><a href="https://rust-lang.github.io/rfcs/1023-rebalancing-coherence.html">RFC1023</a> fundamental attribute</li>
+</ul>
+<p>这是<code>Pin</code>刚稳定没多久的时候，就被发现了它的api是unsound的（当时官方还特别自豪，在对编译器尽可能小的改动下，设计出一套safe api表达不可移动的语义）。之前看这篇文章还不太懂unsafe和<code>Pin</code>，现在回看一下，发现还是很有意思的。</p>
+<p>首先前置需要了解的关于<code>Pin</code>api的知识点</p>
+<ol>
+<li><code>Pin&lt;P&gt;</code>的soundness，依赖于具体的<code>P</code>的实现，然后如果<code>P</code>实现正确，其safe api则保证在<code>P::Target: !Unpin</code>的情况下不会移动<code>P::Target</code>。</li>
+<li>一旦构造了一个<code>Pin&lt;P&gt;</code>，如果<code>P::Target: !Unpin</code>，则所有重新拿到<code>&amp;P</code>, <code>&amp;mut P</code>的地方都要遵守<code>Pin::new_unchecked</code>的安全契约（这是个unsafe函数），即不可移动<code>P::Target</code>。（这是具体的<code>P</code>所必要遵守的规则）</li>
+<li>与<code>Pin&lt;P&gt;</code> api打交道的trait有<code>Clone</code>, <code>Deref</code>, <code>DerefMut</code>, <code>PartialEq</code>, <code>Drop</code>等trait，他们其中有些能安全地拿到<code>&amp;P</code>或者<code>&amp;mut P</code>。这就是2的情形，需要遵守契约。</li>
+</ol>
+<p>我们开始来爆破</p>
+<h3 id="pint-是unsound的"><a class="header" href="#pint-是unsound的"><code>Pin&lt;&amp;T&gt;</code> 是unsound的</a></h3>
+<p>首先我们需要知道，rust一般的类型不允许为外部crate的类型实现外部的crate，这一规则称之为<strong>孤儿原则</strong>。这带来一个好处是，一个类型一旦实现好一些trait之后，外部就不能再对它的性质进行修改，本地crate就可以信任这个实现，依赖这个类型的性质去编写一些unsafe代码。但是<code>&amp;T</code>, <code>&amp;mut T</code>, <code>Box&lt;T&gt;</code>, <code>Pin&lt;P&gt;</code>是特例，我们可以为他们添加之前未实现的一些trait。比如现在<code>&amp;T</code>没有实现<code>DerefMut</code>，我们就可以为某个具体的<code>&amp;Foo</code>实现<code>DerefMut</code>。</p>
+<p><code>Pin&lt;P&gt;::as_mut()</code>依赖<code>P::deref_mut</code>的实现，但<code>&lt;&amp;T as DerefMut&gt;::deref_mut</code>的在std里还没定义，可以被外部类型不加约束地实现，但外部的实现是不能被信任的。</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl&lt;P: DerefMut&gt; Pin&lt;P&gt; {
+    pub fn as_mut(&amp;mut self) -&gt; Pin&lt;&amp;mut P::Target&gt; {
+        unsafe { Pin::new_unchecked(&amp;mut *self.pointer) }
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>爆破的方法，就是给一个坏的<code>&amp;T</code> <code>DerefMut</code>的实现，破坏掉<code>Pin</code>的契约：（这是无船给的例子）</p>
+<pre><pre class="playground"><code class="language-rust edition2021">struct MyType&lt;'a&gt;(Cell&lt;Option&lt;&amp;'a mut MyType&lt;'a&gt;&gt;&gt;, PhantomPinned);
+
+// 0. 为`&amp;MyType`实现了`DerefMut`，这是个安全却坏的实现
+impl&lt;'a&gt; DerefMut for &amp;'a MyType&lt;'a&gt; {
+    fn deref_mut(&amp;mut self) -&gt; &amp;mut MyType&lt;'a&gt; {
+        self.0.replace(None).unwrap()
+    }
+}
+
+
+fn main() {
+    let mut unpinned: MyType&lt;'_&gt; = MyType(Cell::new(None), PhantomPinned);
+    
+    // 1. 首先构造一个`Pin&lt;&amp;MyType&gt;`
+    let p = Box::pin(MyType(Cell::new(Some(&amp;mut unpinned)), PhantomPinned));
+    let mut p_ref: Pin&lt;&amp;MyType&lt;'_&gt;&gt; = p.as_ref();
+    
+    // 2. 通过`&lt;&amp;MyType&gt;::deref_mut()`构造出`Pin&lt;&amp;mut MyType&gt;`。
+    //    根据`&lt;&amp;MyType&gt;::deref_mut()`的实现，`p_mut`实际pin住了`unpinned`
+    let p_mut: Pin&lt;&amp;mut MyType&lt;'_&gt;&gt; = p_ref.as_mut();
+
+    // 3. 这里却可以移动被应该已被pin住的`unpinned`，违反了`Pin`的契约。
+    drop(unpinned);
+    
+    println!(&quot;oh no!&quot;);
+}</code></pre></pre>
+<p>不过这里暂时没有ub，不过可以把<code>PhantomPinned</code>换成<code>Future</code>，在违反契约之前通过<code>poll</code>构造一个自引用，那么就可以造出一个ub了。注意这里没有加任何unsafe的代码，却违反了契约，说明接口unsound了。</p>
+<p>那么后面的修复方案是，std通过negative impl，禁止外部为<code>&amp;T</code>实现<code>DerefMut</code>（这其实是一个对<code>&amp;T</code>的breaking change，并且又开洞了）：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl&lt;T&gt; !DerefMut for &amp;T {}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="pinmut-t是unsound的"><a class="header" href="#pinmut-t是unsound的"><code>Pin&lt;&amp;mut T&gt;</code>是unsound的</a></h3>
+<p>和上面原理类似，这次是通过坏的<code>&lt;&amp;mut MyType as Clone&gt;::clone</code>来爆破<code>Pin&lt;P&gt;::clone</code>。把上面例子稍稍改改就好了。这里就不展开了。</p>
+<p>修复的方案也是类似的：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl&lt;T&gt; !Clone for &amp;mut T {}
+<span class="boring">}</span></code></pre></pre>
+<h3 id="pinpeq是unsound的"><a class="header" href="#pinpeq是unsound的"><code>Pin&lt;P&gt;::eq</code>是unsound的</a></h3>
+<p>在修复之前，<code>Pin</code>的<code>PartialEq</code>的实现是这样的：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl&lt;P, Q&gt; PartialEq&lt;Pin&lt;P&gt;&gt; for Pin&lt;Q&gt; 
+where
+    Q: PartialEq&lt;P&gt;
+{ ... }
+<span class="boring">}</span></code></pre></pre>
+<p>在我们实现<code>Q: PartialEq&lt;P&gt;</code>的时候同样能拿到<code>&amp;P</code>和<code>&amp;Q</code>，所以<code>Pin&lt;P&gt;::eq</code>同样也依赖于具体<code>P</code>和<code>Q</code>的实现是否正确。不过这次并不能通过上面的方法爆破了，因为<code>&amp;T</code>, <code>&amp;mut T</code>, <code>Box&lt;T&gt;</code>都实现了<code>PartialEq</code>（以及组合情况），外部crate无法替换他们的实现。</p>
+<p>不过<code>PartialEq</code>对比<code>DerefMut</code>/<code>Clone</code>多了一个泛型参数，根据孤儿规则，下面的代码是可以编译的：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl&lt;T&gt; PartialEq&lt;LocalType&gt; for RemoteType {}
+impl&lt;T&gt; PartialEq&lt;RemoteType&gt; for LocalType {}
+<span class="boring">}</span></code></pre></pre>
+<p>这意味着我们可以为std里的类型添加自己的<code>PartialEq</code>类型实现。</p>
+<p>这次我们通过为<code>Rc&lt;T&gt;</code>添加新<code>PartialEq</code>实现爆破<code>Pin</code>的<code>PartialEq</code>。</p>
+<ul>
+<li>
+<p>首先我们可以通过<code>&amp;Rc&lt;T&gt;</code>移动<code>T</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">fn main() {
+    let rc = Rc::new(PhantomPinned);
+    {    
+        // 这里通过`&amp;rc`，构造了个`Pin&lt;Rc&lt;PhantomPinned&gt;&gt;`，后面要求`PhantomPinned`不能被移动
+        let pinned = unsafe { Pin::new_unchecked(rc.clone()) };
+    }
+    
+    // 把`PhantomPinned`移动出来了，破坏了`pin`的约束
+    let unpinned = rc.try_unwrap().unwrap();
+}</code></pre></pre>
+</li>
+<li>
+<p>利用这点我们实现一个坏的<code>PartialEq</code></p>
+<pre><pre class="playground"><code class="language-rust edition2021">struct MyType&lt;T&gt;(Cell&lt;Option&lt;Rc&lt;T&gt;&gt;&gt;); 
+
+// 假装`MyType`是个指针
+impl&lt;T&gt; Deref for MyType&lt;T&gt; {
+    type Target = MyType&lt;T&gt;;
+    fn deref(&amp;self) { self }
+}
+
+// 实现一个坏的`PartialEq`
+impl&lt;T&gt; PartialEq&lt;MyType&lt;T&gt;&gt; for Rc&lt;T&gt; {
+    fn eq(&amp;self, other: &amp;MyType&lt;T&gt;) -&gt; bool {
+        other.set(Some(self.clone()));
+        true
+    }
+}
+
+fn main() {
+    let my_type = Pin::new(MyType(Cell::new(None)));
+    
+    {
+        // pin住了`PhantomPinned`
+        let pinned: Pin&lt;Rc&lt;PhantomPinned&gt;&gt; = Rc::pin(PhantomPinned);
+        // 把`Rc`克隆了一份到`my_type`里
+        assert!(pinned_rc == pin_my_type);
+    }
+    
+    // 把`PhantomPinned`移动了出来，违反了pin的约束
+    let unpinned = my_type.0.replace(None).try_unwrap().unwrap();
+}</code></pre></pre>
+</li>
+</ul>
+<p>同理，也可以利用这个漏洞造一个UB。（具体造ub的方法，在<a href="https://internals.rust-lang.org/t/unsoundness-in-pin/11311">Unsoundness in <code>Pin</code></a>这个帖子里就有）</p>
+<p>那么修复方法就是，<code>PartialEq</code>不再允许下游再拿到<code>&amp;P</code>和<code>&amp;Q</code>了，转而依赖<code>P::Target</code>的<code>PartialEq</code>实现（<code>&amp;T</code>可移动不走<code>T</code>）：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl&lt;P: Deref, Q: Deref&gt; PartialEq&lt;Pin&lt;P&gt;&gt; for Pin&lt;Q&gt;
+where
+    Q::Target: PartialEq&lt;P::Target&gt;
+<span class="boring">}</span></code></pre></pre>
+<hr />
+<p>其实帖子里还有提到<code>CoerceUnsized</code>导致的unsoundness，这里就不再展开了，一来我还不太了解这个trait，二来这是个未稳定的特性，三来这个unsoundness还没有修（=。=）</p>
+<p>总之这几个unsoundness再次告诉我们，<strong>unsafe 不能信任一个任何一个未经验证的safe trait的实现</strong>，因为它可能做任何事情，随时会破坏掉你依赖的契约。</p>
+<h2 id="pollfnf-should-be-unpin"><a class="header" href="#pollfnf-should-be-unpin"><code>PollFn&lt;F&gt;</code> should be <code>Unpin</code>?</a></h2>
+<p>参考资料：</p>
+<ul>
+<li>
+<p><a href="https://internals.rust-lang.org/t/surprising-soundness-trouble-around-pollfn/17484">Surprising soundness trouble around <code>PollFn</code></a> </p>
+</li>
+<li>
+<p><a href="https://github.com/rust-lang/rust/pull/102737">poll_fn and Unpin: fix pinning</a></p>
+</li>
+<li>
+<p><a href="https://rust-lang.zulipchat.com/#narrow/stream/187312-wg-async/topic/marking.20Unpin.20as.20unsafe">marking <code>Unpin</code> as unsafe</a></p>
+</li>
+</ul>
+<p>这是最近的一次发生在<code>Pin</code>相关的 api上的一次breaking change（rust 1.64，写这篇文章是1.65）。事实上这次接口并没有unsound，只是容易发生接口的误用，为此社区还发生了些争论。</p>
+<p>在此之前，<code>PollFn&lt;F&gt;</code>无论<code>F</code>是否<code>Unpin</code>，<code>PollFn&lt;F&gt;</code>都是<code>Unpin</code>的（不过这也是1.64才稳定到std）。那么意味着我们可以把<code>Pin&lt;Pointer&lt;PollFn&lt;F&gt;&gt;&gt;</code>当做<code>Pointer&lt;PollFn&lt;F&gt;&gt;</code>耍，并且随意移动<code>PollFn&lt;F&gt;</code>。</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl&lt;F&gt; Unpin for PollFn&lt;F&gt; {}
+<span class="boring">}</span></code></pre></pre>
+<p>这是有原因的，因为<code>PollFn&lt;F&gt;</code>实现<code>Future</code>需要访问<code>&amp;mut F</code>：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl&lt;T, F&gt; Future for PollFn&lt;F&gt;
+where
+    F: FnMut(&amp;mut Context) -&gt; Poll&lt;T&gt;
+{
+    type Output = T;
+    fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context) -&gt; Poll&lt;T&gt; {
+        // 这里要`Pin&lt;&amp;mut Self&gt;`能deref到`Self`并且拿到`&amp;mut F`
+        (&amp;mut self.f)(cx)
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>不过下面的代码就不幸运了（更不幸的是<code>tokio::join!</code>和<code>tokio::select!</code>内部就是这么实现的）：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut future = trouble();
+
+let mut pinned = Box::pin(future::poll_fn(move |cx| { // 将`!Unpin`的future移动到闭包里
+    unsafe { Pin::new_unchecked(&amp;mut future) }.poll(cx)
+}));
+
+<span class="boring">}</span></code></pre></pre>
+<p>这里有两个会产生UB的地方</p>
+<ol>
+<li>可以通过<code>pinned</code>解引用移动自引用结构<code>future</code></li>
+<li>没有实现<code>!Unpin</code>，但<code>future</code>有自引用，没有触发unpin hack，违反了noalias</li>
+</ol>
+<p>究其原因，就是里面没有遵守<code>Pin::new_unchecked()</code>的调用约定——在一个随时可以被移动的闭包中试图说服编译器不会移动被捕获的<code>future</code>，但这是不对的。</p>
+<p>修复方式也很简单，<code>PollFn&lt;F&gt;</code>改为只有在<code>F: Unpin</code>的时候才满足<code>Unpin</code>：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl&lt;F: Unpin&gt; Unpin for PollFn&lt;F&gt; {} 
+// 在`F: !Unpin`的时候，通过auto trait得到`PollFn&lt;F&gt;: !Unpin`
+
+impl&lt;T, F&gt; Future for PollFn&lt;F&gt;
+where
+    F: FnMut(&amp;mut Context) -&gt; Poll&lt;T&gt;
+{
+    type Output = T;
+    fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context) -&gt; Poll&lt;T&gt; {
+        // 这里就要确保`FnMut::call_mut`不会移动闭包了
+        // 目前不允许重载`FnMut::call_mut`的话，可以保证
+        unsafe { (&amp;mut self.get_unchecked_mut().f) }(cx)
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>修改之后，刚刚的代码将不再会产生UB：</p>
+<ol>
+<li>无法通过<code>pinned</code>移动<code>future</code></li>
+<li>开启了unpin hack，关掉了noalias</li>
+</ol>
+<hr />
+<p>在这次的讨论中，有几个争论的点</p>
+<ol>
+<li>
+<p>这个breaking change，会导致破坏掉很多下游代码，而且目前在<code>futures</code>中没合到<code>std</code>的<code>Future</code>组合子都有类似的问题。</p>
+<p>结论：</p>
+<ul>
+<li>对于std来说这个<code>poll_fn</code>刚和进去几天，跑了跑crater发现基本没有break下游代码；说明这种误用很少。</li>
+<li>tokio迅速跟进，先于std把<code>join!</code>和<code>select!</code>的实现改对了。如果std不改的话日后可能导致社区分裂。</li>
+</ul>
+</li>
+<li>
+<p>这完全属于<code>Pin::new_unchecked()</code>的误用，而不是<code>PollFn</code>的问题。</p>
+<p>结论：原则上，这是是没有错的，因为<code>PollFn</code>的接口是sound的。<em>但接口的作者除了保证接口sound以外，也应该减少和unsafe交互时产生UB的情况。</em></p>
+</li>
+<li>
+<p><code>Unpin</code>只是一种lint，只是用于提Pin api高人体工学的优化。就像<code>UnwindSafe</code>一样。</p>
+<p>结论：</p>
+<ul>
+<li>
+<p>这完全是一种对<code>Unpin</code>的误解，将<code>Unpin</code>设计成safe trait是一种失误。（我之前也这么误解了。。。）</p>
+</li>
+<li>
+<p><code>Unpin</code>其实是有安全契约的：为<code>T</code>实现<code>Unpin</code>的必要条件是，可以安全地pin-project到所有的字段到<code>&amp;mut field</code>。现在在std里是safe  trait的原因，只是因为pin-project没有在std里提供。。（pin-project这个crate自己定义了个<code>UnsafeUnpin</code> trait）——扩展一下，如果<code>spawn</code>没有在std里提供，<code>Send</code>/<code>Sync</code>也可以不用unsafe，因为std不会产生ub。</p>
+</li>
+<li>
+<p>不过这个问题日后再观望。。。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="disallow-impl-drop-for-pin"><a class="header" href="#disallow-impl-drop-for-pin">Disallow impl <code>Drop</code> for <code>Pin</code></a></h2>
+<p>参考资料：</p>
+<ul>
+<li><a href="https://github.com/rust-lang/rust/pull/99576">Do not allow <code>Drop</code> impl on foreign fundamental types</a> bug修复pr</li>
+<li><a href="https://github.com/rust-lang/rust/issues/99575"><code>Unimplemented</code> selecting <code>Binder(&lt;std::pin::Pin&lt;std::boxed::Box&lt;B&gt;&gt; as std::ops::Drop&gt;, [])</code></a> bug原issue</li>
+<li><a href="https://github.com/rust-lang/rust/issues/8142">Prohibit specialized drops</a> 禁止给Drop trait进行特化。</li>
+</ul>
+<p>这个bug是在1.60的时候才被发现的，也算是很晚了，又是一个新功能影响旧功能的例子。。。</p>
+<p>首先<code>Drop</code>trait是有特殊检查的：</p>
+<ol>
+<li>drop check</li>
+<li>只允许<code>Drop</code>给ADT(即struct/enum/union)实现</li>
+<li>impl泛型列表以及泛型约束要完全与类型定义中的完全一致</li>
+</ol>
+<p>第一点可以看我之前的文章<a href="./%E8%AE%B2%E8%AE%B2%E8%AE%A9%E6%88%91%E7%86%AC%E4%BA%86%E5%87%A0%E5%A4%A9%E5%A4%9C%E7%9A%84DropCheck.html">讲讲让我熬了几天夜的Drop Check</a>，第二第三点在<a href="https://github.com/rust-lang/rust/issues/8142">Prohibit specialized drops</a> 这里实现，不过具体原因除了会导致rustc panic之外没详细讨论（后面了解到会产生unsoundness）。</p>
+<p>那么<code>Pin</code>是ADT，并且标记了<code>#[fundamental]</code>，那么就可以在下游crate为<code>Pin</code>实现<code>Drop</code>：</p>
+<pre><pre class="playground"><code class="language-rust edition2021">struct A;
+
+impl Drop for Pin&lt;Box&lt;A&gt;&gt; {
+    fn drop(&amp;mut self) {
+        println!(&quot;Dropping!&quot;);
+    }
+}
+
+fn main() {
+    let _: Pin&lt;Box&lt;()&gt;&gt; = Box::pin(());
+}
+</code></pre></pre>
+<p>但其实违反了<code>Drop</code>trait的第三条规则，并且会导致rustc panic：</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>error: internal compiler error: Encountered error `Unimplemented` selecting `Binder(&lt;std::pin::Pin&lt;std::boxed::Box&lt;()&gt;&gt; as std::ops::Drop&gt;, [])` during codegen
+  |
+  = note: delayed at compiler\rustc_trait_selection\src\traits\codegen.rs:68:32
+
+<span class="boring">}</span></code></pre></pre>
+<p>修复方式是<code>Pin</code>也需要遵守<code>Drop</code>的规则，禁止为<code>Pin</code>实现<code>Drop</code>。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="讲讲让我熬了几天夜的DropCheck.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="todo.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="讲讲让我熬了几天夜的DropCheck.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="todo.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
