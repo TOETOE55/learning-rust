@@ -8,6 +8,7 @@
 - [Rust基础概念](./Rust基础概念.md)
   - [当我们在Rust中讨论“所有权”的时候，究竟是在说什么](./当我们在rust中讨论“所有权”的时候，究竟是在说什么.md)
   - [当我们在Rust中讨论unsafe的时候，究竟是在说什么](./当我们在rust中讨论unsafe的时候，究竟是在说什么.md)
+  - [稍微聊聊Rust中的Invariant —— 那些必须保持的性质](./稍微聊聊Rust中的Invariant.md)
   - [Rust程序的组成](./todo.md)
   - [Rust的类型系统(type/trait/borrow checker等)](./todo.md)
   - [Rust中的impl item](./rust中的implItem.md)
